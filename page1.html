@@ -481,7 +481,7 @@
             function updateActiveQuestion() {
                 // Update progress bar
                 const progressPercentage = (currentQuestion / (questionContainers.length - 1)) * 100;
-                progressBar.style.width = ${progressPercentage}%;
+                progressBar.style.width = `${progressPercentage}%`;
                 
                 // Update current question text
                 currentQuestionSpan.textContent = currentQuestion + 1;
@@ -516,14 +516,14 @@
                     feedbackElement.textContent = 'Correct! Well done.';
                     feedbackElement.className = 'feedback correct';
                 } else {
-                    feedbackElement.textContent = Incorrect. The right answer is: ${getCorrectAnswerText(questionNumber)};
+                    feedbackElement.textContent = `Incorrect. The right answer is: ${getCorrectAnswerText(questionNumber)}`;
                     feedbackElement.className = 'feedback incorrect';
                 }
             }
             
             function getCorrectAnswerText(questionNumber) {
                 const correctAnswer = correctAnswers[questionNumber];
-                const questionContainer = document.getElementById(question${questionNumber});
+                const questionContainer = document.getElementById(`question${questionNumber}`);
                 const answerButtons = questionContainer.querySelectorAll('.answer-btn');
                 
                 for (let button of answerButtons) {
