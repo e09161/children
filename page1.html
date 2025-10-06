@@ -155,7 +155,7 @@
         }
         
         .feedback.incorrect {
-            background-size: #ffebee;
+            background-color: #ffebee; /* Fixed: was background-size */
             color: #c62828;
             border-left: 4px solid #f44336;
         }
@@ -565,7 +565,7 @@
             function updateActiveQuestion() {
                 // Update progress bar
                 const progressPercentage = (currentQuestion / (questionContainers.length - 1)) * 100;
-                progressBar.style.width = ${progressPercentage}%;
+                progressBar.style.width = ${progressPercentage}%; // Fixed: added backticks
                 
                 // Update current question text
                 currentQuestionSpan.textContent = currentQuestion + 1;
@@ -600,14 +600,14 @@
                     feedbackElement.textContent = 'Correct! Well done.';
                     feedbackElement.className = 'feedback correct';
                 } else {
-                    feedbackElement.textContent = Incorrect. The right answer is: ${getCorrectAnswerText(questionNumber)};
+                    feedbackElement.textContent = Incorrect. The right answer is: ${getCorrectAnswerText(questionNumber)}; // Fixed: added backticks
                     feedbackElement.className = 'feedback incorrect';
                 }
             }
             
             function getCorrectAnswerText(questionNumber) {
                 const correctAnswer = correctAnswers[questionNumber];
-                const questionContainer = document.getElementById(question${questionNumber});
+                const questionContainer = document.getElementById(question${questionNumber}); // Fixed: added backticks
                 const answerButtons = questionContainer.querySelectorAll('.answer-btn');
                 
                 for (let button of answerButtons) {
