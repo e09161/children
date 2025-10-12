@@ -71,6 +71,28 @@
             display: flex;
             flex-direction: column;
             gap: 15px;
+            max-height: 600px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+        
+        /* Custom scrollbar for questions */
+        .questions::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .questions::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        
+        .questions::-webkit-scrollbar-thumb {
+            background: #3498db;
+            border-radius: 10px;
+        }
+        
+        .questions::-webkit-scrollbar-thumb:hover {
+            background: #2980b9;
         }
         
         .question {
@@ -169,6 +191,28 @@
             display: flex;
             flex-direction: column;
             gap: 15px;
+            max-height: 600px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+        
+        /* Custom scrollbar for answers */
+        .answers::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .answers::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        
+        .answers::-webkit-scrollbar-thumb {
+            background: #2ecc71;
+            border-radius: 10px;
+        }
+        
+        .answers::-webkit-scrollbar-thumb:hover {
+            background: #27ae60;
         }
         
         .draggable {
@@ -189,6 +233,7 @@
         .draggable.dragging {
             opacity: 0.7;
             transform: scale(0.98);
+            cursor: grabbing;
         }
         
         .answer-number {
@@ -281,6 +326,26 @@
             color: #7f8c8d;
             font-style: italic;
         }
+        
+        .scroll-hint {
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            display: none;
+        }
+        
+        @media (max-height: 800px) {
+            .questions, .answers {
+                max-height: 400px;
+            }
+        }
+        
+        @media (max-height: 600px) {
+            .questions, .answers {
+                max-height: 300px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -292,6 +357,7 @@
         
         <div class="instructions">
             <p>🎯 Click the play button next to each question to hear it. Then drag and drop the correct answer into the box.</p>
+            <p class="scroll-hint" id="scroll-hint">💡 The page will automatically scroll when dragging items to help you reach all questions.</p>
         </div>
         
         <div class="game-area">
@@ -383,13 +449,13 @@
             </div>
             
             <div class="answers">
-                <div class="draggable" draggable="true" data-answer="name">
+                <div class="draggable" draggable="true" data-answer="live">
                     <span class="answer-number">A</span> I live near the park.
                 </div>
-                <div class="draggable" draggable="true" data-answer="age">
+                <div class="draggable" draggable="true" data-answer="name">
                     <span class="answer-number">B</span> My name is Giulia.
                 </div>
-                <div class="draggable" draggable="true" data-answer="live">
+                <div class="draggable" draggable="true" data-answer="bicycle">
                     <span class="answer-number">C</span> Yes I do. I have a blue, green and purple bicycle.
                 </div>
                 <div class="draggable" draggable="true" data-answer="address">
@@ -398,7 +464,7 @@
                 <div class="draggable" draggable="true" data-answer="telephone">
                     <span class="answer-number">E</span> It's 563755931.
                 </div>
-                <div class="draggable" draggable="true" data-answer="bicycle">
+                <div class="draggable" draggable="true" data-answer="age">
                     <span class="answer-number">F</span> I'm six years old.
                 </div>
             </div>
@@ -425,10 +491,20 @@
             const feedback = document.getElementById('feedback');
             const completionMessage = document.getElementById('completion-message');
             const audioPlayers = document.querySelectorAll('.audio-player');
+            const scrollHint = document.getElementById('scroll-hint');
             
             let draggedItem = null;
             let completedMatches = 0;
             const totalMatches = 6;
+            let scrollInterval = null;
+            
+            // Show scroll hint on first interaction
+            setTimeout(() => {
+                scrollHint.style.display = 'block';
+                setTimeout(() => {
+                    scrollHint.style.display = 'none';
+                }, 5000);
+            }, 2000);
             
             // Create audio elements for each question/answer pair
             const audioElements = {};
@@ -455,16 +531,82 @@
             
             // Set up drag events for draggable items
             draggables.forEach(draggable => {
-                draggable.addEventListener('dragstart', function() {
+                draggable.addEventListener('dragstart', function(e) {
                     draggedItem = this;
                     setTimeout(() => this.classList.add('dragging'), 0);
+                    
+                    // Start intelligent scrolling when dragging begins
+                    startIntelligentScrolling(e);
                 });
                 
                 draggable.addEventListener('dragend', function() {
                     this.classList.remove('dragging');
                     draggedItem = null;
+                    
+                    // Stop intelligent scrolling when dragging ends
+                    stopIntelligentScrolling();
+                });
+                
+                // For touch devices
+                draggable.addEventListener('touchstart', function(e) {
+                    draggedItem = this;
+                    this.classList.add('dragging');
+                    
+                    // Start intelligent scrolling when touch begins
+                    startIntelligentScrolling(e.touches[0]);
+                }, { passive: true });
+                
+                draggable.addEventListener('touchend', function() {
+                    this.classList.remove('dragging');
+                    draggedItem = null;
+                    
+                    // Stop intelligent scrolling when touch ends
+                    stopIntelligentScrolling();
                 });
             });
+            
+            // Intelligent scrolling function
+            function startIntelligentScrolling(startEvent) {
+                const scrollSpeed = 15;
+                const scrollThreshold = 100; // pixels from edge to start scrolling
+                
+                scrollInterval = setInterval(() => {
+                    if (!draggedItem) return;
+                    
+                    // Get current mouse/touch position
+                    let clientY;
+                    if (startEvent.type.includes('touch')) {
+                        // For touch devices, we need to get the current touch position
+                        const touches = event.touches;
+                        if (touches && touches.length > 0) {
+                            clientY = touches[0].clientY;
+                        }
+                    } else {
+                        // For mouse
+                        clientY = event.clientY;
+                    }
+                    
+                    if (!clientY) return;
+                    
+                    const windowHeight = window.innerHeight;
+                    
+                    // Scroll down if near bottom of screen
+                    if (clientY > windowHeight - scrollThreshold) {
+                        window.scrollBy(0, scrollSpeed);
+                    }
+                    // Scroll up if near top of screen
+                    else if (clientY < scrollThreshold) {
+                        window.scrollBy(0, -scrollSpeed);
+                    }
+                }, 16); // ~60fps
+            }
+            
+            function stopIntelligentScrolling() {
+                if (scrollInterval) {
+                    clearInterval(scrollInterval);
+                    scrollInterval = null;
+                }
+            }
             
             // Set up drop zones
             dropZones.forEach(zone => {
@@ -493,6 +635,30 @@
                     
                     // Check if all items are placed
                     checkAllPlaced();
+                });
+                
+                // For touch devices
+                zone.addEventListener('touchmove', function(e) {
+                    e.preventDefault();
+                }, { passive: false });
+                
+                zone.addEventListener('touchend', function(e) {
+                    if (draggedItem) {
+                        this.classList.remove('highlight');
+                        
+                        // Remove from previous drop zone if any
+                        if (draggedItem.parentElement.classList.contains('drop-zone')) {
+                            document.querySelector('.answers').appendChild(draggedItem);
+                        }
+                        
+                        // Update drop zone content
+                        const dropZoneContent = this.querySelector('.drop-zone-content');
+                        dropZoneContent.innerHTML = '';
+                        dropZoneContent.appendChild(draggedItem);
+                        
+                        // Check if all items are placed
+                        checkAllPlaced();
+                    }
                 });
             });
             
@@ -606,6 +772,9 @@
                 feedback.style.display = 'none';
                 completionMessage.style.display = 'none';
                 completedMatches = 0;
+                
+                // Scroll to top for better UX
+                window.scrollTo(0, 0);
             });
         });
     </script>
