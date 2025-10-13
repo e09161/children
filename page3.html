@@ -658,6 +658,16 @@
             let scrollInterval = null;
             let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
             
+            // Store correct answer mappings
+            const correctAnswers = {
+                'name': 'B',
+                'age': 'F', 
+                'live': 'A',
+                'address': 'D',
+                'telephone': 'E',
+                'bicycle': 'C'
+            };
+            
             // Show scroll hint on first interaction
             setTimeout(() => {
                 scrollHint.style.display = 'block';
@@ -864,6 +874,9 @@
                 droppedAnswer.appendChild(answerText);
                 dropZoneContent.appendChild(droppedAnswer);
                 
+                // Store the answer data in the drop zone for later checking
+                zone.setAttribute('data-dropped-answer', draggedItem.querySelector('.answer-number').textContent);
+                
                 // Remove the original draggable from answers
                 draggedItem.remove();
                 
@@ -958,21 +971,18 @@
                 }
             }
             
-            // Check answers
+            // Check answers - FIXED VERSION
             checkBtn.addEventListener('click', function() {
                 let allCorrect = true;
                 completedMatches = 0;
                 
                 dropZones.forEach(zone => {
                     const questionType = zone.getAttribute('data-answer');
-                    const answer = zone.querySelector('.dropped-answer');
+                    const droppedAnswerNumber = zone.getAttribute('data-dropped-answer');
+                    const correctAnswerNumber = correctAnswers[questionType];
                     
-                    if (answer) {
-                        const originalDraggable = document.querySelector(`.draggable[data-answer="${questionType}"]`);
-                        const correctAnswerNumber = originalDraggable ? originalDraggable.querySelector('.answer-number').textContent : '';
-                        const currentAnswerNumber = answer.querySelector('.answer-number').textContent;
-                        
-                        if (currentAnswerNumber === correctAnswerNumber) {
+                    if (droppedAnswerNumber) {
+                        if (droppedAnswerNumber === correctAnswerNumber) {
                             zone.classList.add('correct');
                             zone.classList.remove('incorrect');
                             completedMatches++;
@@ -1013,6 +1023,7 @@
                     const dropZoneContent = zone.querySelector('.drop-zone-content');
                     dropZoneContent.innerHTML = '<span class="empty-message">Drop answer here</span>';
                     zone.classList.remove('correct', 'incorrect', 'highlight');
+                    zone.removeAttribute('data-dropped-answer');
                 });
                 
                 // Reset answers container
