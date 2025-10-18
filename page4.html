@@ -1,0 +1,1267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sentence Builder - Unscramble the Words</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            margin: 10px 0;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 8px;
+            font-size: 1.8rem;
+        }
+        
+        .instructions {
+            background-color: #e8f4fc;
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 1rem;
+            line-height: 1.4;
+            color: #2c3e50;
+            border-left: 4px solid #3498db;
+        }
+        
+        .game-area {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        @media (min-width: 768px) {
+            .game-area {
+                flex-direction: row;
+            }
+        }
+        
+        .questions {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 8px;
+        }
+        
+        /* Custom scrollbar for questions */
+        .questions::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .questions::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 8px;
+        }
+        
+        .questions::-webkit-scrollbar-thumb {
+            background: #3498db;
+            border-radius: 8px;
+        }
+        
+        .questions::-webkit-scrollbar-thumb:hover {
+            background: #2980b9;
+        }
+        
+        .question {
+            background-color: #f8f9fa;
+            border: 2px solid #bdc3c7;
+            border-radius: 10px;
+            padding: 15px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: flex-start;
+            position: relative;
+            min-height: 120px;
+        }
+        
+        @media (max-width: 480px) {
+            .question {
+                padding: 12px;
+                min-height: 110px;
+            }
+        }
+        
+        .question-number {
+            background-color: #3498db;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 12px;
+            flex-shrink: 0;
+            margin-top: 2px;
+            font-size: 1rem;
+        }
+        
+        .question-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .question-text {
+            font-size: 1.1rem;
+            margin-bottom: 0;
+            font-weight: 600;
+            color: #2c3e50;
+            line-height: 1.3;
+        }
+        
+        .scrambled-words {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+        
+        .word {
+            background-color: #e3f2fd;
+            border: 1px solid #3498db;
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .word:hover {
+            background-color: #bbdefb;
+            transform: translateY(-2px);
+        }
+        
+        .word.selected {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        .drop-zone {
+            min-height: 80px;
+            border: 2px dashed #bdc3c7;
+            border-radius: 8px;
+            padding: 12px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #fafbfc;
+            touch-action: none;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        
+        .drop-zone.highlight {
+            background-color: #e1f5fe;
+            border-color: #4fc3f7;
+            transform: scale(1.02);
+        }
+        
+        .drop-zone.correct {
+            background-color: #e8f5e9;
+            border-color: #66bb6a;
+            border-style: solid;
+        }
+        
+        .drop-zone.incorrect {
+            background-color: #ffebee;
+            border-color: #ef5350;
+            border-style: solid;
+        }
+        
+        .drop-zone-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            min-height: 50px;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            white-space: normal;
+            font-size: 1rem;
+            line-height: 1.3;
+            padding: 6px 0;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        
+        .audio-player {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #3498db;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+            margin-left: 12px;
+            font-size: 1.2rem;
+            border: none;
+            -webkit-touch-callout: none;
+        }
+        
+        .audio-player:hover, .audio-player:active {
+            background-color: #2980b9;
+            transform: scale(1.1);
+        }
+        
+        .answers {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 8px;
+        }
+        
+        /* Custom scrollbar for answers */
+        .answers::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .answers::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 8px;
+        }
+        
+        .answers::-webkit-scrollbar-thumb {
+            background: #2ecc71;
+            border-radius: 8px;
+        }
+        
+        .answers::-webkit-scrollbar-thumb:hover {
+            background: #27ae60;
+        }
+        
+        .draggable {
+            background-color: white;
+            border: 2px solid #3498db;
+            border-radius: 8px;
+            padding: 14px;
+            cursor: grab;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            font-size: 1rem;
+            line-height: 1.3;
+            -webkit-user-select: none;
+            user-select: none;
+            touch-action: none;
+        }
+        
+        .draggable:hover, .draggable:active {
+            background-color: #e3f2fd;
+            transform: translateY(-2px);
+        }
+        
+        .draggable.dragging {
+            opacity: 0.7;
+            transform: scale(0.98);
+            cursor: grabbing;
+        }
+        
+        .draggable.dragging-mobile {
+            opacity: 0.7;
+            transform: scale(0.98);
+            position: fixed;
+            z-index: 1000;
+            pointer-events: none;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .answer-number {
+            background-color: #2ecc71;
+            color: white;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 10px;
+            flex-shrink: 0;
+            font-size: 0.9rem;
+        }
+        
+        .answer-text {
+            display: inline;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+        
+        .dropped-answer {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 6px 0;
+        }
+        
+        .dropped-answer .answer-number {
+            margin-right: 10px;
+        }
+        
+        .dropped-answer .answer-text {
+            flex: 1;
+        }
+        
+        .feedback {
+            margin-top: 20px;
+            padding: 12px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+            display: none;
+        }
+        
+        .feedback.correct {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            display: block;
+        }
+        
+        .feedback.incorrect {
+            background-color: #ffebee;
+            color: #c62828;
+            display: block;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+            min-width: 140px;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        @media (max-width: 480px) {
+            button {
+                min-width: 120px;
+                padding: 10px 20px;
+                font-size: 0.95rem;
+            }
+        }
+        
+        #check-btn {
+            background: linear-gradient(to right, #2ecc71, #1abc9c);
+            color: white;
+        }
+        
+        #check-btn:hover, #check-btn:active {
+            background: linear-gradient(to right, #27ae60, #16a085);
+            transform: translateY(-2px);
+        }
+        
+        #reset-btn {
+            background: linear-gradient(to right, #e74c3c, #e67e22);
+            color: white;
+        }
+        
+        #reset-btn:hover, #reset-btn:active {
+            background: linear-gradient(to right, #c0392b, #d35400);
+            transform: translateY(-2px);
+        }
+        
+        .audio-icon {
+            font-size: 1.2rem;
+        }
+        
+        .completion-message {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 1.1rem;
+            color: #2c3e50;
+            font-weight: bold;
+            display: none;
+            padding: 0 10px;
+        }
+        
+        .empty-message {
+            color: #7f8c8d;
+            font-style: italic;
+            font-size: 0.95rem;
+        }
+        
+        .scroll-hint {
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 0.85rem;
+            margin-top: 8px;
+            display: none;
+            padding: 0 10px;
+        }
+        
+        .mobile-tip {
+            display: none;
+            text-align: center;
+            color: #3498db;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            font-weight: 500;
+        }
+        
+        @media (max-width: 767px) {
+            .mobile-tip {
+                display: block;
+            }
+            
+            .questions, .answers {
+                max-height: 400px;
+            }
+            
+            .container {
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 1.6rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .questions, .answers {
+                max-height: 350px;
+            }
+            
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                padding: 12px;
+                border-radius: 15px;
+            }
+            
+            h1 {
+                font-size: 1.4rem;
+            }
+            
+            .instructions {
+                padding: 10px;
+                font-size: 0.95rem;
+            }
+        }
+        
+        @media (max-height: 700px) {
+            .questions, .answers {
+                max-height: 300px;
+            }
+        }
+        
+        @media (max-height: 600px) {
+            .questions, .answers {
+                max-height: 250px;
+            }
+        }
+        
+        /* Touch device optimizations */
+        @media (hover: none) and (pointer: coarse) {
+            .draggable:hover {
+                transform: none;
+                background-color: white;
+            }
+            
+            .draggable:active {
+                background-color: #e3f2fd;
+                transform: scale(0.98);
+            }
+            
+            .audio-player:hover {
+                transform: none;
+            }
+            
+            .audio-player:active {
+                transform: scale(1.1);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Sentence Builder - Unscramble the Words</h1>
+            <p>Rearrange the scrambled words to form correct sentences</p>
+        </header>
+        
+        <div class="instructions">
+            <p>🎯 Click on the scrambled words to build sentences in the drop zones. You can also drag and drop the complete answers.</p>
+            <p class="scroll-hint" id="scroll-hint">💡 The page will automatically scroll when dragging items to help you reach all questions.</p>
+            <p class="mobile-tip">📱 On mobile: Tap and hold to drag answers, or tap words to build sentences</p>
+        </div>
+        
+        <div class="game-area">
+            <div class="questions">
+                <div class="question" data-question="name">
+                    <div class="question-number">1</div>
+                    <div class="question-content">
+                        <div class="question-text">Unscramble these words:</div>
+                        <div class="scrambled-words">
+                            <div class="word" data-word="is">is</div>
+                            <div class="word" data-word="name">name</div>
+                            <div class="word" data-word="What">What</div>
+                            <div class="word" data-word="your">your</div>
+                            <div class="word" data-word="?">?</div>
+                        </div>
+                        <div class="drop-zone" data-answer="name">
+                            <div class="drop-zone-content">
+                                <span class="empty-message">Build your sentence here</span>
+                            </div>
+                            <div class="audio-player" data-audio="q31.mp3">
+                                <span class="audio-icon">▶</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="question" data-question="live">
+                    <div class="question-number">2</div>
+                    <div class="question-content">
+                        <div class="question-text">Unscramble these words:</div>
+                        <div class="scrambled-words">
+                            <div class="word" data-word="you">you</div>
+                            <div class="word" data-word="do">do</div>
+                            <div class="word" data-word="live">live</div>
+                            <div class="word" data-word="Where">Where</div>
+                            <div class="word" data-word="?">?</div>
+                        </div>
+                        <div class="drop-zone" data-answer="live">
+                            <div class="drop-zone-content">
+                                <span class="empty-message">Build your sentence here</span>
+                            </div>
+                            <div class="audio-player" data-audio="q32.mp3">
+                                <span class="audio-icon">▶</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="question" data-question="age">
+                    <div class="question-number">3</div>
+                    <div class="question-content">
+                        <div class="question-text">Unscramble these words:</div>
+                        <div class="scrambled-words">
+                            <div class="word" data-word="old">old</div>
+                            <div class="word" data-word="are">are</div>
+                            <div class="word" data-word="How">How</div>
+                            <div class="word" data-word="you">you</div>
+                            <div class="word" data-word="?">?</div>
+                        </div>
+                        <div class="drop-zone" data-answer="age">
+                            <div class="drop-zone-content">
+                                <span class="empty-message">Build your sentence here</span>
+                            </div>
+                            <div class="audio-player" data-audio="q33.mp3">
+                                <span class="audio-icon">▶</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="question" data-question="going">
+                    <div class="question-number">4</div>
+                    <div class="question-content">
+                        <div class="question-text">Unscramble these words:</div>
+                        <div class="scrambled-words">
+                            <div class="word" data-word="are">are</div>
+                            <div class="word" data-word="Where">Where</div>
+                            <div class="word" data-word="going">going</div>
+                            <div class="word" data-word="you">you</div>
+                            <div class="word" data-word="?">?</div>
+                        </div>
+                        <div class="drop-zone" data-answer="going">
+                            <div class="drop-zone-content">
+                                <span class="empty-message">Build your sentence here</span>
+                            </div>
+                            <div class="audio-player" data-audio="q34.mp3">
+                                <span class="audio-icon">▶</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="question" data-question="time">
+                    <div class="question-number">5</div>
+                    <div class="question-content">
+                        <div class="question-text">Unscramble these words:</div>
+                        <div class="scrambled-words">
+                            <div class="word" data-word="is">is</div>
+                            <div class="word" data-word="time">time</div>
+                            <div class="word" data-word="it">it</div>
+                            <div class="word" data-word="What">What</div>
+                            <div class="word" data-word="?">?</div>
+                        </div>
+                        <div class="drop-zone" data-answer="time">
+                            <div class="drop-zone-content">
+                                <span class="empty-message">Build your sentence here</span>
+                            </div>
+                            <div class="audio-player" data-audio="q35.mp3">
+                                <span class="audio-icon">▶</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="answers">
+                <div class="draggable" draggable="true" data-answer="name">
+                    <span class="answer-number">A</span>
+                    <span class="answer-text">My name is Sarah.</span>
+                </div>
+                <div class="draggable" draggable="true" data-answer="live">
+                    <span class="answer-number">B</span>
+                    <span class="answer-text">I live near the park.</span>
+                </div>
+                <div class="draggable" draggable="true" data-answer="age">
+                    <span class="answer-number">C</span>
+                    <span class="answer-text">I am seven years old.</span>
+                </div>
+                <div class="draggable" draggable="true" data-answer="going">
+                    <span class="answer-number">D</span>
+                    <span class="answer-text">I am going to my school.</span>
+                </div>
+                <div class="draggable" draggable="true" data-answer="time">
+                    <span class="answer-number">E</span>
+                    <span class="answer-text">It is eight o'clock.</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="feedback" id="feedback"></div>
+        
+        <div class="completion-message" id="completion-message">
+            Great job! You've successfully built all the sentences!
+        </div>
+        
+        <div class="controls">
+            <button id="check-btn">Check Answers</button>
+            <button id="reset-btn">Reset Game</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const draggables = document.querySelectorAll('.draggable');
+            const dropZones = document.querySelectorAll('.drop-zone');
+            const checkBtn = document.getElementById('check-btn');
+            const resetBtn = document.getElementById('reset-btn');
+            const feedback = document.getElementById('feedback');
+            const completionMessage = document.getElementById('completion-message');
+            const audioPlayers = document.querySelectorAll('.audio-player');
+            const scrollHint = document.getElementById('scroll-hint');
+            const words = document.querySelectorAll('.word');
+            
+            let draggedItem = null;
+            let completedMatches = 0;
+            const totalMatches = 5;
+            let scrollInterval = null;
+            let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            
+            // Store correct answer mappings
+            const correctAnswers = {
+                'name': 'What is your name?',
+                'live': 'Where do you live?', 
+                'age': 'How old are you?',
+                'going': 'Where are you going?',
+                'time': 'What time is it?'
+            };
+            
+            // Store correct answer letter mappings
+            const correctAnswerLetters = {
+                'name': 'A',
+                'live': 'B', 
+                'age': 'C',
+                'going': 'D',
+                'time': 'E'
+            };
+            
+            // Show scroll hint on first interaction
+            setTimeout(() => {
+                scrollHint.style.display = 'block';
+                setTimeout(() => {
+                    scrollHint.style.display = 'none';
+                }, 5000);
+            }, 2000);
+            
+            // Create audio elements for each question/answer pair
+            const audioElements = {};
+            const audioFiles = ['q31.mp3', 'q32.mp3', 'q33.mp3', 'q34.mp3', 'q35.mp3'];
+            
+            // Load audio files
+            audioFiles.forEach(file => {
+                const audio = new Audio(file);
+                audioElements[file] = audio;
+                
+                audio.addEventListener('error', function() {
+                    console.error(`Error loading audio file: ${file}`);
+                });
+                
+                audio.addEventListener('ended', function() {
+                    // Reset play button when audio ends
+                    audioPlayers.forEach(player => {
+                        if (player.getAttribute('data-audio') === this.src.split('/').pop()) {
+                            player.innerHTML = '▶';
+                        }
+                    });
+                });
+            });
+            
+            // Word selection functionality
+            words.forEach(word => {
+                word.addEventListener('click', function() {
+                    const question = this.closest('.question');
+                    const dropZone = question.querySelector('.drop-zone');
+                    const dropZoneContent = dropZone.querySelector('.drop-zone-content');
+                    
+                    // Remove empty message if present
+                    const emptyMessage = dropZoneContent.querySelector('.empty-message');
+                    if (emptyMessage) {
+                        emptyMessage.remove();
+                    }
+                    
+                    // Add the word to the drop zone
+                    const wordElement = document.createElement('span');
+                    wordElement.className = 'word selected';
+                    wordElement.textContent = this.textContent;
+                    wordElement.setAttribute('data-word', this.getAttribute('data-word'));
+                    
+                    // Add click event to remove the word
+                    wordElement.addEventListener('click', function() {
+                        this.remove();
+                        
+                        // If drop zone is empty, show empty message
+                        if (dropZoneContent.children.length === 0) {
+                            const emptyMsg = document.createElement('span');
+                            emptyMsg.className = 'empty-message';
+                            emptyMsg.textContent = 'Build your sentence here';
+                            dropZoneContent.appendChild(emptyMsg);
+                        }
+                    });
+                    
+                    dropZoneContent.appendChild(wordElement);
+                    
+                    // Remove the word from the scrambled words list
+                    this.remove();
+                });
+            });
+            
+            // Enhanced mobile drag and drop
+            if (isMobile) {
+                setupMobileDragAndDrop();
+            } else {
+                setupDesktopDragAndDrop();
+            }
+            
+            function setupDesktopDragAndDrop() {
+                // Mouse events for desktop
+                draggables.forEach(draggable => {
+                    draggable.addEventListener('dragstart', function(e) {
+                        draggedItem = this;
+                        setTimeout(() => this.classList.add('dragging'), 0);
+                        startIntelligentScrolling(e);
+                    });
+                    
+                    draggable.addEventListener('dragend', function() {
+                        this.classList.remove('dragging');
+                        draggedItem = null;
+                        stopIntelligentScrolling();
+                    });
+                });
+                
+                dropZones.forEach(zone => {
+                    zone.addEventListener('dragover', function(e) {
+                        e.preventDefault();
+                        this.classList.add('highlight');
+                    });
+                    
+                    zone.addEventListener('dragleave', function() {
+                        this.classList.remove('highlight');
+                    });
+                    
+                    zone.addEventListener('drop', function(e) {
+                        e.preventDefault();
+                        this.classList.remove('highlight');
+                        handleDrop(this);
+                    });
+                });
+            }
+            
+            function setupMobileDragAndDrop() {
+                let activeTouch = null;
+                let ghostElement = null;
+                
+                draggables.forEach(draggable => {
+                    draggable.addEventListener('touchstart', function(e) {
+                        e.preventDefault();
+                        if (activeTouch) return; // Ignore if already dragging
+                        
+                        const touch = e.touches[0];
+                        activeTouch = {
+                            id: touch.identifier,
+                            startX: touch.clientX,
+                            startY: touch.clientY,
+                            element: this
+                        };
+                        
+                        draggedItem = this;
+                        this.classList.add('dragging-mobile');
+                        
+                        // Create ghost element for visual feedback
+                        ghostElement = this.cloneNode(true);
+                        ghostElement.style.position = 'fixed';
+                        ghostElement.style.left = (touch.clientX - this.offsetWidth / 2) + 'px';
+                        ghostElement.style.top = (touch.clientY - this.offsetHeight / 2) + 'px';
+                        ghostElement.style.width = this.offsetWidth + 'px';
+                        ghostElement.style.zIndex = '1000';
+                        ghostElement.style.opacity = '0.8';
+                        ghostElement.style.pointerEvents = 'none';
+                        document.body.appendChild(ghostElement);
+                        
+                        startIntelligentScrolling(touch);
+                    }, { passive: false });
+                    
+                    draggable.addEventListener('touchmove', function(e) {
+                        if (!activeTouch) return;
+                        
+                        const touch = Array.from(e.touches).find(t => t.identifier === activeTouch.id);
+                        if (!touch) return;
+                        
+                        e.preventDefault();
+                        
+                        // Update ghost element position
+                        if (ghostElement) {
+                            ghostElement.style.left = (touch.clientX - ghostElement.offsetWidth / 2) + 'px';
+                            ghostElement.style.top = (touch.clientY - ghostElement.offsetHeight / 2) + 'px';
+                        }
+                        
+                        // Highlight drop zones under touch
+                        const elementsUnderTouch = document.elementsFromPoint(touch.clientX, touch.clientY);
+                        const dropZoneUnderTouch = elementsUnderTouch.find(el => el.classList.contains('drop-zone'));
+                        
+                        // Remove highlight from all drop zones
+                        dropZones.forEach(zone => zone.classList.remove('highlight'));
+                        
+                        // Highlight the drop zone under touch
+                        if (dropZoneUnderTouch) {
+                            dropZoneUnderTouch.classList.add('highlight');
+                        }
+                    }, { passive: false });
+                    
+                    draggable.addEventListener('touchend', function(e) {
+                        if (!activeTouch) return;
+                        
+                        const touch = Array.from(e.changedTouches).find(t => t.identifier === activeTouch.id);
+                        if (!touch) return;
+                        
+                        // Find drop zone at release point
+                        const elementsAtRelease = document.elementsFromPoint(touch.clientX, touch.clientY);
+                        const dropZoneAtRelease = elementsAtRelease.find(el => el.classList.contains('drop-zone'));
+                        
+                        if (dropZoneAtRelease) {
+                            handleDrop(dropZoneAtRelease);
+                        }
+                        
+                        // Cleanup
+                        this.classList.remove('dragging-mobile');
+                        if (ghostElement) {
+                            document.body.removeChild(ghostElement);
+                            ghostElement = null;
+                        }
+                        
+                        // Remove highlight from all drop zones
+                        dropZones.forEach(zone => zone.classList.remove('highlight'));
+                        
+                        activeTouch = null;
+                        draggedItem = null;
+                        stopIntelligentScrolling();
+                    }, { passive: false });
+                    
+                    draggable.addEventListener('touchcancel', function() {
+                        // Cleanup on touch cancel
+                        this.classList.remove('dragging-mobile');
+                        if (ghostElement) {
+                            document.body.removeChild(ghostElement);
+                            ghostElement = null;
+                        }
+                        dropZones.forEach(zone => zone.classList.remove('highlight'));
+                        activeTouch = null;
+                        draggedItem = null;
+                        stopIntelligentScrolling();
+                    });
+                });
+            }
+            
+            // Handle drop logic
+            function handleDrop(zone) {
+                if (!draggedItem) return;
+                
+                // Remove from previous drop zone if any
+                if (draggedItem.parentElement.classList.contains('drop-zone')) {
+                    document.querySelector('.answers').appendChild(draggedItem);
+                }
+                
+                // Update drop zone content
+                const dropZoneContent = zone.querySelector('.drop-zone-content');
+                dropZoneContent.innerHTML = '';
+                
+                // Create a properly formatted dropped answer
+                const droppedAnswer = document.createElement('div');
+                droppedAnswer.className = 'dropped-answer';
+                
+                const answerNumber = document.createElement('span');
+                answerNumber.className = 'answer-number';
+                answerNumber.textContent = draggedItem.querySelector('.answer-number').textContent;
+                
+                const answerText = document.createElement('span');
+                answerText.className = 'answer-text';
+                answerText.textContent = draggedItem.querySelector('.answer-text').textContent;
+                
+                droppedAnswer.appendChild(answerNumber);
+                droppedAnswer.appendChild(answerText);
+                dropZoneContent.appendChild(droppedAnswer);
+                
+                // Store the answer data in the drop zone for later checking
+                zone.setAttribute('data-dropped-answer', draggedItem.querySelector('.answer-number').textContent);
+                
+                // Remove the original draggable from answers
+                draggedItem.remove();
+                
+                // Check if all items are placed
+                checkAllPlaced();
+            }
+            
+            // Intelligent scrolling function
+            function startIntelligentScrolling(startEvent) {
+                const scrollSpeed = 20;
+                const scrollThreshold = 80;
+                
+                scrollInterval = setInterval(() => {
+                    if (!draggedItem) return;
+                    
+                    let clientY;
+                    if (startEvent.clientY !== undefined) {
+                        clientY = startEvent.clientY;
+                    } else if (startEvent.touches && startEvent.touches[0]) {
+                        clientY = startEvent.touches[0].clientY;
+                    } else {
+                        return;
+                    }
+                    
+                    const windowHeight = window.innerHeight;
+                    
+                    if (clientY > windowHeight - scrollThreshold) {
+                        window.scrollBy(0, scrollSpeed);
+                    } else if (clientY < scrollThreshold) {
+                        window.scrollBy(0, -scrollSpeed);
+                    }
+                }, 16);
+            }
+            
+            function stopIntelligentScrolling() {
+                if (scrollInterval) {
+                    clearInterval(scrollInterval);
+                    scrollInterval = null;
+                }
+            }
+            
+            // Audio player functionality
+            audioPlayers.forEach(player => {
+                player.addEventListener('click', function() {
+                    const audioFile = this.getAttribute('data-audio');
+                    const audio = audioElements[audioFile];
+                    
+                    if (!audio) {
+                        console.error(`Audio element not found for: ${audioFile}`);
+                        return;
+                    }
+                    
+                    if (audio.paused) {
+                        // Pause all other audios
+                        Object.values(audioElements).forEach(a => {
+                            if (a !== audio && !a.paused) {
+                                a.pause();
+                                // Reset all play buttons
+                                audioPlayers.forEach(p => {
+                                    if (p.getAttribute('data-audio') !== audioFile) {
+                                        p.innerHTML = '▶';
+                                    }
+                                });
+                            }
+                        });
+                        
+                        audio.play().then(() => {
+                            this.innerHTML = '⏸';
+                        }).catch(error => {
+                            console.error(`Error playing audio: ${error}`);
+                        });
+                    } else {
+                        audio.pause();
+                        this.innerHTML = '▶';
+                    }
+                });
+                
+                // Touch events for audio players
+                player.addEventListener('touchend', function(e) {
+                    e.preventDefault();
+                    this.click();
+                });
+            });
+            
+            // Check if all items are placed in drop zones
+            function checkAllPlaced() {
+                const placedItems = document.querySelectorAll('.drop-zone .dropped-answer');
+                if (placedItems.length === totalMatches) {
+                    completionMessage.style.display = 'block';
+                } else {
+                    completionMessage.style.display = 'none';
+                }
+            }
+            
+            // Check answers
+            checkBtn.addEventListener('click', function() {
+                let allCorrect = true;
+                completedMatches = 0;
+                
+                dropZones.forEach(zone => {
+                    const questionType = zone.getAttribute('data-answer');
+                    const droppedAnswerNumber = zone.getAttribute('data-dropped-answer');
+                    const correctAnswerNumber = correctAnswerLetters[questionType];
+                    
+                    // Check if sentence was built from words
+                    const builtSentence = zone.querySelector('.drop-zone-content');
+                    if (builtSentence && builtSentence.querySelector('.word')) {
+                        // Get the text content of the built sentence
+                        const words = Array.from(builtSentence.querySelectorAll('.word'));
+                        const builtText = words.map(word => word.textContent).join(' ');
+                        
+                        if (builtText === correctAnswers[questionType]) {
+                            zone.classList.add('correct');
+                            zone.classList.remove('incorrect');
+                            completedMatches++;
+                        } else {
+                            zone.classList.add('incorrect');
+                            zone.classList.remove('correct');
+                            allCorrect = false;
+                        }
+                    } 
+                    // Check if answer was dragged
+                    else if (droppedAnswerNumber) {
+                        if (droppedAnswerNumber === correctAnswerNumber) {
+                            zone.classList.add('correct');
+                            zone.classList.remove('incorrect');
+                            completedMatches++;
+                        } else {
+                            zone.classList.add('incorrect');
+                            zone.classList.remove('correct');
+                            allCorrect = false;
+                        }
+                    } else {
+                        allCorrect = false;
+                        zone.classList.add('incorrect');
+                    }
+                });
+                
+                if (allCorrect) {
+                    feedback.textContent = '🎉 Excellent! All sentences are correct! 🎉';
+                    feedback.className = 'feedback correct';
+                } else {
+                    feedback.textContent = `${completedMatches} out of ${totalMatches} sentences are correct. Try again!`;
+                    feedback.className = 'feedback incorrect';
+                }
+            });
+            
+            // Reset functionality
+            resetBtn.addEventListener('click', function() {
+                // Pause all audio
+                Object.values(audioElements).forEach(audio => {
+                    audio.pause();
+                });
+                
+                // Reset all play buttons
+                audioPlayers.forEach(player => {
+                    player.innerHTML = '▶';
+                });
+                
+                // Clear all drop zones
+                dropZones.forEach(zone => {
+                    const dropZoneContent = zone.querySelector('.drop-zone-content');
+                    dropZoneContent.innerHTML = '<span class="empty-message">Build your sentence here</span>';
+                    zone.classList.remove('correct', 'incorrect', 'highlight');
+                    zone.removeAttribute('data-dropped-answer');
+                });
+                
+                // Reset scrambled words
+                const questions = document.querySelectorAll('.question');
+                questions.forEach(question => {
+                    const questionType = question.getAttribute('data-question');
+                    const scrambledWords = question.querySelector('.scrambled-words');
+                    scrambledWords.innerHTML = '';
+                    
+                    // Add words back based on question type
+                    const wordsData = getWordsForQuestion(questionType);
+                    wordsData.forEach(word => {
+                        const wordElement = document.createElement('div');
+                        wordElement.className = 'word';
+                        wordElement.setAttribute('data-word', word);
+                        wordElement.textContent = word;
+                        
+                        wordElement.addEventListener('click', function() {
+                            const question = this.closest('.question');
+                            const dropZone = question.querySelector('.drop-zone');
+                            const dropZoneContent = dropZone.querySelector('.drop-zone-content');
+                            
+                            // Remove empty message if present
+                            const emptyMessage = dropZoneContent.querySelector('.empty-message');
+                            if (emptyMessage) {
+                                emptyMessage.remove();
+                            }
+                            
+                            // Add the word to the drop zone
+                            const wordElement = document.createElement('span');
+                            wordElement.className = 'word selected';
+                            wordElement.textContent = this.textContent;
+                            wordElement.setAttribute('data-word', this.getAttribute('data-word'));
+                            
+                            // Add click event to remove the word
+                            wordElement.addEventListener('click', function() {
+                                this.remove();
+                                
+                                // If drop zone is empty, show empty message
+                                if (dropZoneContent.children.length === 0) {
+                                    const emptyMsg = document.createElement('span');
+                                    emptyMsg.className = 'empty-message';
+                                    emptyMsg.textContent = 'Build your sentence here';
+                                    dropZoneContent.appendChild(emptyMsg);
+                                }
+                            });
+                            
+                            dropZoneContent.appendChild(wordElement);
+                            
+                            // Remove the word from the scrambled words list
+                            this.remove();
+                        });
+                        
+                        scrambledWords.appendChild(wordElement);
+                    });
+                });
+                
+                // Reset answers container
+                const answersContainer = document.querySelector('.answers');
+                answersContainer.innerHTML = '';
+                
+                // Recreate all draggable answers
+                const answers = [
+                    { answer: 'name', number: 'A', text: 'My name is Sarah.' },
+                    { answer: 'live', number: 'B', text: 'I live near the park.' },
+                    { answer: 'age', number: 'C', text: 'I am seven years old.' },
+                    { answer: 'going', number: 'D', text: 'I am going to my school.' },
+                    { answer: 'time', number: 'E', text: 'It is eight o\'clock.' }
+                ];
+                
+                answers.forEach(item => {
+                    const draggable = document.createElement('div');
+                    draggable.className = 'draggable';
+                    draggable.setAttribute('draggable', 'true');
+                    draggable.setAttribute('data-answer', item.answer);
+                    
+                    const answerNumber = document.createElement('span');
+                    answerNumber.className = 'answer-number';
+                    answerNumber.textContent = item.number;
+                    
+                    const answerText = document.createElement('span');
+                    answerText.className = 'answer-text';
+                    answerText.textContent = item.text;
+                    
+                    draggable.appendChild(answerNumber);
+                    draggable.appendChild(answerText);
+                    answersContainer.appendChild(draggable);
+                });
+                
+                // Reinitialize drag and drop
+                if (isMobile) {
+                    setupMobileDragAndDrop();
+                } else {
+                    setupDesktopDragAndDrop();
+                }
+                
+                // Hide feedback and completion message
+                feedback.style.display = 'none';
+                completionMessage.style.display = 'none';
+                completedMatches = 0;
+                
+                // Scroll to top for better UX
+                window.scrollTo(0, 0);
+            });
+            
+            // Helper function to get words for each question
+            function getWordsForQuestion(questionType) {
+                const wordsMap = {
+                    'name': ['is', 'name', 'What', 'your', '?'],
+                    'live': ['you', 'do', 'live', 'Where', '?'],
+                    'age': ['old', 'are', 'How', 'you', '?'],
+                    'going': ['are', 'Where', 'going', 'you', '?'],
+                    'time': ['is', 'time', 'it', 'What', '?']
+                };
+                
+                return wordsMap[questionType] || [];
+            }
+            
+            // Prevent context menu on long press for better mobile experience
+            document.addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+                return false;
+            });
+        });
+    </script>
+</body>
+</html>
