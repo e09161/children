@@ -71,7 +71,7 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 20px;
             max-height: 500px;
             overflow-y: auto;
             padding-right: 8px;
@@ -103,16 +103,14 @@
             padding: 15px;
             transition: all 0.3s ease;
             display: flex;
-            align-items: flex-start;
+            flex-direction: column;
             position: relative;
-            min-height: 120px;
         }
         
-        @media (max-width: 480px) {
-            .question {
-                padding: 12px;
-                min-height: 110px;
-            }
+        .question-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
         }
         
         .question-number {
@@ -127,20 +125,11 @@
             font-weight: bold;
             margin-right: 12px;
             flex-shrink: 0;
-            margin-top: 2px;
             font-size: 1rem;
-        }
-        
-        .question-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
         }
         
         .question-text {
             font-size: 1.1rem;
-            margin-bottom: 0;
             font-weight: 600;
             color: #2c3e50;
             line-height: 1.3;
@@ -150,7 +139,10 @@
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: #f0f7ff;
+            border-radius: 8px;
         }
         
         .word {
@@ -173,15 +165,26 @@
             color: white;
         }
         
+        .sentence-area {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .sentence-label {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            font-weight: 500;
+        }
+        
         .drop-zone {
-            min-height: 80px;
+            min-height: 60px;
             border: 2px dashed #bdc3c7;
             border-radius: 8px;
             padding: 12px;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
-            justify-content: space-between;
             background-color: #fafbfc;
             touch-action: none;
             flex-wrap: wrap;
@@ -210,15 +213,21 @@
             flex: 1;
             display: flex;
             align-items: center;
-            min-height: 50px;
+            min-height: 40px;
             word-wrap: break-word;
             overflow-wrap: break-word;
             white-space: normal;
             font-size: 1rem;
             line-height: 1.3;
-            padding: 6px 0;
             flex-wrap: wrap;
             gap: 6px;
+        }
+        
+        .audio-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
         }
         
         .audio-player {
@@ -233,7 +242,6 @@
             cursor: pointer;
             transition: all 0.2s ease;
             flex-shrink: 0;
-            margin-left: 12px;
             font-size: 1.2rem;
             border: none;
             -webkit-touch-callout: none;
@@ -242,6 +250,12 @@
         .audio-player:hover, .audio-player:active {
             background-color: #2980b9;
             transform: scale(1.1);
+        }
+        
+        .audio-text {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            font-style: italic;
         }
         
         .answers {
@@ -547,107 +561,141 @@
         <div class="game-area">
             <div class="questions">
                 <div class="question" data-question="name">
-                    <div class="question-number">1</div>
-                    <div class="question-content">
+                    <div class="question-header">
+                        <div class="question-number">1</div>
                         <div class="question-text">Unscramble these words:</div>
-                        <div class="scrambled-words">
-                            <div class="word" data-word="is">is</div>
-                            <div class="word" data-word="name">name</div>
-                            <div class="word" data-word="What">What</div>
-                            <div class="word" data-word="your">your</div>
-                            <div class="word" data-word="?">?</div>
-                        </div>
+                    </div>
+                    <div class="scrambled-words">
+                        <div class="word" data-word="is">is</div>
+                        <div class="word" data-word="name">name</div>
+                        <div class="word" data-word="What">What</div>
+                        <div class="word" data-word="your">your</div>
+                        <div class="word" data-word="?">?</div>
+                    </div>
+                    <div class="sentence-area">
+                        <div class="sentence-label">Build your sentence here:</div>
                         <div class="drop-zone" data-answer="name">
                             <div class="drop-zone-content">
-                                <span class="empty-message">Build your sentence here</span>
-                            </div>
-                            <div class="audio-player" data-audio="q31.mp3">
-                                <span class="audio-icon">▶</span>
+                                <span class="empty-message">Click words above to build your sentence</span>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="question" data-question="live">
-                    <div class="question-number">2</div>
-                    <div class="question-content">
-                        <div class="question-text">Unscramble these words:</div>
-                        <div class="scrambled-words">
-                            <div class="word" data-word="you">you</div>
-                            <div class="word" data-word="do">do</div>
-                            <div class="word" data-word="live">live</div>
-                            <div class="word" data-word="Where">Where</div>
-                            <div class="word" data-word="?">?</div>
+                    <div class="audio-controls">
+                        <div class="audio-text">Listen to the question:</div>
+                        <div class="audio-player" data-audio="q31.mp3">
+                            <span class="audio-icon">▶</span>
                         </div>
+                    </div>
+                </div>
+                
+                <div class="question" data-question="live">
+                    <div class="question-header">
+                        <div class="question-number">2</div>
+                        <div class="question-text">Unscramble these words:</div>
+                    </div>
+                    <div class="scrambled-words">
+                        <div class="word" data-word="you">you</div>
+                        <div class="word" data-word="do">do</div>
+                        <div class="word" data-word="live">live</div>
+                        <div class="word" data-word="Where">Where</div>
+                        <div class="word" data-word="?">?</div>
+                    </div>
+                    <div class="sentence-area">
+                        <div class="sentence-label">Build your sentence here:</div>
                         <div class="drop-zone" data-answer="live">
                             <div class="drop-zone-content">
-                                <span class="empty-message">Build your sentence here</span>
-                            </div>
-                            <div class="audio-player" data-audio="q32.mp3">
-                                <span class="audio-icon">▶</span>
+                                <span class="empty-message">Click words above to build your sentence</span>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="question" data-question="age">
-                    <div class="question-number">3</div>
-                    <div class="question-content">
-                        <div class="question-text">Unscramble these words:</div>
-                        <div class="scrambled-words">
-                            <div class="word" data-word="old">old</div>
-                            <div class="word" data-word="are">are</div>
-                            <div class="word" data-word="How">How</div>
-                            <div class="word" data-word="you">you</div>
-                            <div class="word" data-word="?">?</div>
+                    <div class="audio-controls">
+                        <div class="audio-text">Listen to the question:</div>
+                        <div class="audio-player" data-audio="q32.mp3">
+                            <span class="audio-icon">▶</span>
                         </div>
+                    </div>
+                </div>
+                
+                <div class="question" data-question="age">
+                    <div class="question-header">
+                        <div class="question-number">3</div>
+                        <div class="question-text">Unscramble these words:</div>
+                    </div>
+                    <div class="scrambled-words">
+                        <div class="word" data-word="old">old</div>
+                        <div class="word" data-word="are">are</div>
+                        <div class="word" data-word="How">How</div>
+                        <div class="word" data-word="you">you</div>
+                        <div class="word" data-word="?">?</div>
+                    </div>
+                    <div class="sentence-area">
+                        <div class="sentence-label">Build your sentence here:</div>
                         <div class="drop-zone" data-answer="age">
                             <div class="drop-zone-content">
-                                <span class="empty-message">Build your sentence here</span>
-                            </div>
-                            <div class="audio-player" data-audio="q33.mp3">
-                                <span class="audio-icon">▶</span>
+                                <span class="empty-message">Click words above to build your sentence</span>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="question" data-question="going">
-                    <div class="question-number">4</div>
-                    <div class="question-content">
-                        <div class="question-text">Unscramble these words:</div>
-                        <div class="scrambled-words">
-                            <div class="word" data-word="are">are</div>
-                            <div class="word" data-word="Where">Where</div>
-                            <div class="word" data-word="going">going</div>
-                            <div class="word" data-word="you">you</div>
-                            <div class="word" data-word="?">?</div>
+                    <div class="audio-controls">
+                        <div class="audio-text">Listen to the question:</div>
+                        <div class="audio-player" data-audio="q33.mp3">
+                            <span class="audio-icon">▶</span>
                         </div>
+                    </div>
+                </div>
+                
+                <div class="question" data-question="going">
+                    <div class="question-header">
+                        <div class="question-number">4</div>
+                        <div class="question-text">Unscramble these words:</div>
+                    </div>
+                    <div class="scrambled-words">
+                        <div class="word" data-word="are">are</div>
+                        <div class="word" data-word="Where">Where</div>
+                        <div class="word" data-word="going">going</div>
+                        <div class="word" data-word="you">you</div>
+                        <div class="word" data-word="?">?</div>
+                    </div>
+                    <div class="sentence-area">
+                        <div class="sentence-label">Build your sentence here:</div>
                         <div class="drop-zone" data-answer="going">
                             <div class="drop-zone-content">
-                                <span class="empty-message">Build your sentence here</span>
-                            </div>
-                            <div class="audio-player" data-audio="q34.mp3">
-                                <span class="audio-icon">▶</span>
+                                <span class="empty-message">Click words above to build your sentence</span>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="question" data-question="time">
-                    <div class="question-number">5</div>
-                    <div class="question-content">
-                        <div class="question-text">Unscramble these words:</div>
-                        <div class="scrambled-words">
-                            <div class="word" data-word="is">is</div>
-                            <div class="word" data-word="time">time</div>
-                            <div class="word" data-word="it">it</div>
-                            <div class="word" data-word="What">What</div>
-                            <div class="word" data-word="?">?</div>
+                    <div class="audio-controls">
+                        <div class="audio-text">Listen to the question:</div>
+                        <div class="audio-player" data-audio="q34.mp3">
+                            <span class="audio-icon">▶</span>
                         </div>
+                    </div>
+                </div>
+                
+                <div class="question" data-question="time">
+                    <div class="question-header">
+                        <div class="question-number">5</div>
+                        <div class="question-text">Unscramble these words:</div>
+                    </div>
+                    <div class="scrambled-words">
+                        <div class="word" data-word="is">is</div>
+                        <div class="word" data-word="time">time</div>
+                        <div class="word" data-word="it">it</div>
+                        <div class="word" data-word="What">What</div>
+                        <div class="word" data-word="?">?</div>
+                    </div>
+                    <div class="sentence-area">
+                        <div class="sentence-label">Build your sentence here:</div>
                         <div class="drop-zone" data-answer="time">
                             <div class="drop-zone-content">
-                                <span class="empty-message">Build your sentence here</span>
+                                <span class="empty-message">Click words above to build your sentence</span>
                             </div>
-                            <div class="audio-player" data-audio="q35.mp3">
-                                <span class="audio-icon">▶</span>
-                            </div>
+                        </div>
+                    </div>
+                    <div class="audio-controls">
+                        <div class="audio-text">Listen to the question:</div>
+                        <div class="audio-player" data-audio="q35.mp3">
+                            <span class="audio-icon">▶</span>
                         </div>
                     </div>
                 </div>
@@ -656,23 +704,23 @@
             <div class="answers">
                 <div class="draggable" draggable="true" data-answer="name">
                     <span class="answer-number">A</span>
-                    <span class="answer-text">My name is Sarah.</span>
+                    <span class="answer-text">What is your name?</span>
                 </div>
                 <div class="draggable" draggable="true" data-answer="live">
                     <span class="answer-number">B</span>
-                    <span class="answer-text">I live near the park.</span>
+                    <span class="answer-text">Where do you live?</span>
                 </div>
                 <div class="draggable" draggable="true" data-answer="age">
                     <span class="answer-number">C</span>
-                    <span class="answer-text">I am seven years old.</span>
+                    <span class="answer-text">How old are you?</span>
                 </div>
                 <div class="draggable" draggable="true" data-answer="going">
                     <span class="answer-number">D</span>
-                    <span class="answer-text">I am going to my school.</span>
+                    <span class="answer-text">Where are you going?</span>
                 </div>
                 <div class="draggable" draggable="true" data-answer="time">
                     <span class="answer-number">E</span>
-                    <span class="answer-text">It is eight o'clock.</span>
+                    <span class="answer-text">What time is it?</span>
                 </div>
             </div>
         </div>
@@ -783,7 +831,7 @@
                         if (dropZoneContent.children.length === 0) {
                             const emptyMsg = document.createElement('span');
                             emptyMsg.className = 'empty-message';
-                            emptyMsg.textContent = 'Build your sentence here';
+                            emptyMsg.textContent = 'Click words above to build your sentence';
                             dropZoneContent.appendChild(emptyMsg);
                         }
                     });
@@ -1135,7 +1183,7 @@
                 // Clear all drop zones
                 dropZones.forEach(zone => {
                     const dropZoneContent = zone.querySelector('.drop-zone-content');
-                    dropZoneContent.innerHTML = '<span class="empty-message">Build your sentence here</span>';
+                    dropZoneContent.innerHTML = '<span class="empty-message">Click words above to build your sentence</span>';
                     zone.classList.remove('correct', 'incorrect', 'highlight');
                     zone.removeAttribute('data-dropped-answer');
                 });
@@ -1180,7 +1228,7 @@
                                 if (dropZoneContent.children.length === 0) {
                                     const emptyMsg = document.createElement('span');
                                     emptyMsg.className = 'empty-message';
-                                    emptyMsg.textContent = 'Build your sentence here';
+                                    emptyMsg.textContent = 'Click words above to build your sentence';
                                     dropZoneContent.appendChild(emptyMsg);
                                 }
                             });
@@ -1201,11 +1249,11 @@
                 
                 // Recreate all draggable answers
                 const answers = [
-                    { answer: 'name', number: 'A', text: 'My name is Sarah.' },
-                    { answer: 'live', number: 'B', text: 'I live near the park.' },
-                    { answer: 'age', number: 'C', text: 'I am seven years old.' },
-                    { answer: 'going', number: 'D', text: 'I am going to my school.' },
-                    { answer: 'time', number: 'E', text: 'It is eight o\'clock.' }
+                    { answer: 'name', number: 'A', text: 'What is your name?' },
+                    { answer: 'live', number: 'B', text: 'Where do you live?' },
+                    { answer: 'age', number: 'C', text: 'How old are you?' },
+                    { answer: 'going', number: 'D', text: 'Where are you going?' },
+                    { answer: 'time', number: 'E', text: 'What time is it?' }
                 ];
                 
                 answers.forEach(item => {
