@@ -881,7 +881,7 @@
             let completedMatches = 0;
             const totalMatches = 5;
             
-            // Store correct answer mappings
+            // Store correct answer mappings - FIXED VERSION
             const correctQuestions = {
                 'name-question': 'What is your name?',
                 'live-question': 'Where do you live?', 
@@ -1123,7 +1123,7 @@
                 });
             });
             
-            // Check answers
+            // Check answers - FIXED VERSION
             checkBtn.addEventListener('click', function() {
                 let allCorrect = true;
                 completedMatches = 0;
@@ -1137,9 +1137,19 @@
                     if (builtSentence && builtSentence.querySelector('.word')) {
                         // Get the text content of the built sentence
                         const words = Array.from(builtSentence.querySelectorAll('.word'));
-                        const builtText = words.map(word => word.textContent).join(' ');
+                        const builtText = words.map(word => word.textContent).join(' ').trim();
                         
-                        if (builtText === correctQuestions[zoneType]) {
+                        // Normalize the built text and correct answer for comparison
+                        const normalizedBuilt = builtText.replace(/\s+/g, ' ').trim();
+                        const normalizedCorrect = correctQuestions[zoneType].replace(/\s+/g, ' ').trim();
+                        
+                        console.log(`Question ${zoneType}:`, {
+                            built: normalizedBuilt,
+                            correct: normalizedCorrect,
+                            match: normalizedBuilt === normalizedCorrect
+                        });
+                        
+                        if (normalizedBuilt === normalizedCorrect) {
                             zone.classList.add('correct');
                             zone.classList.remove('incorrect');
                             completedMatches++;
@@ -1163,9 +1173,19 @@
                     if (builtSentence && builtSentence.querySelector('.word')) {
                         // Get the text content of the built sentence
                         const words = Array.from(builtSentence.querySelectorAll('.word'));
-                        const builtText = words.map(word => word.textContent).join(' ');
+                        const builtText = words.map(word => word.textContent).join(' ').trim();
                         
-                        if (builtText === correctAnswers[zoneType]) {
+                        // Normalize the built text and correct answer for comparison
+                        const normalizedBuilt = builtText.replace(/\s+/g, ' ').trim();
+                        const normalizedCorrect = correctAnswers[zoneType].replace(/\s+/g, ' ').trim();
+                        
+                        console.log(`Answer ${zoneType}:`, {
+                            built: normalizedBuilt,
+                            correct: normalizedCorrect,
+                            match: normalizedBuilt === normalizedCorrect
+                        });
+                        
+                        if (normalizedBuilt === normalizedCorrect) {
                             zone.classList.add('correct');
                             zone.classList.remove('incorrect');
                             completedMatches++;
