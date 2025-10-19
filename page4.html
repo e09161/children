@@ -143,6 +143,7 @@
             padding: 10px;
             background-color: #f0f7ff;
             border-radius: 8px;
+            min-height: 50px;
         }
         
         .word {
@@ -153,6 +154,7 @@
             font-size: 1rem;
             cursor: pointer;
             transition: all 0.2s ease;
+            height: fit-content;
         }
         
         .word:hover {
@@ -336,6 +338,7 @@
             padding: 10px;
             background-color: #f0fff4;
             border-radius: 8px;
+            min-height: 50px;
         }
         
         .answer-sentence-area {
@@ -591,7 +594,7 @@
         <div class="instructions">
             <p>🎯 Click on the scrambled words to build sentences. Each audio contains both the question and answer.</p>
             <p class="scroll-hint" id="scroll-hint">💡 Scroll to see all questions and answers.</p>
-            <p class="mobile-tip">📱 On mobile: Tap words to build sentences</p>
+            <p class="mobile-tip">📱 On mobile: Tap words to build sentences. Tap words in the sentence area to return them.</p>
         </div>
         
         <div class="game-area">
@@ -601,7 +604,7 @@
                         <div class="question-number">1</div>
                         <div class="question-text">Unscramble the question:</div>
                     </div>
-                    <div class="scrambled-words">
+                    <div class="scrambled-words" id="name-question-words">
                         <div class="word" data-word="is">is</div>
                         <div class="word" data-word="name">name</div>
                         <div class="word" data-word="What">What</div>
@@ -610,7 +613,7 @@
                     </div>
                     <div class="sentence-area">
                         <div class="sentence-label">Build your question here:</div>
-                        <div class="drop-zone" data-answer="name-question">
+                        <div class="drop-zone" data-answer="name-question" id="name-question-zone">
                             <div class="drop-zone-content">
                                 <span class="empty-message">Click words above to build the question</span>
                             </div>
@@ -629,7 +632,7 @@
                         <div class="question-number">2</div>
                         <div class="question-text">Unscramble the question:</div>
                     </div>
-                    <div class="scrambled-words">
+                    <div class="scrambled-words" id="live-question-words">
                         <div class="word" data-word="you">you</div>
                         <div class="word" data-word="do">do</div>
                         <div class="word" data-word="live">live</div>
@@ -638,7 +641,7 @@
                     </div>
                     <div class="sentence-area">
                         <div class="sentence-label">Build your question here:</div>
-                        <div class="drop-zone" data-answer="live-question">
+                        <div class="drop-zone" data-answer="live-question" id="live-question-zone">
                             <div class="drop-zone-content">
                                 <span class="empty-message">Click words above to build the question</span>
                             </div>
@@ -657,7 +660,7 @@
                         <div class="question-number">3</div>
                         <div class="question-text">Unscramble the question:</div>
                     </div>
-                    <div class="scrambled-words">
+                    <div class="scrambled-words" id="age-question-words">
                         <div class="word" data-word="old">old</div>
                         <div class="word" data-word="are">are</div>
                         <div class="word" data-word="How">How</div>
@@ -666,7 +669,7 @@
                     </div>
                     <div class="sentence-area">
                         <div class="sentence-label">Build your question here:</div>
-                        <div class="drop-zone" data-answer="age-question">
+                        <div class="drop-zone" data-answer="age-question" id="age-question-zone">
                             <div class="drop-zone-content">
                                 <span class="empty-message">Click words above to build the question</span>
                             </div>
@@ -685,7 +688,7 @@
                         <div class="question-number">4</div>
                         <div class="question-text">Unscramble the question:</div>
                     </div>
-                    <div class="scrambled-words">
+                    <div class="scrambled-words" id="going-question-words">
                         <div class="word" data-word="are">are</div>
                         <div class="word" data-word="Where">Where</div>
                         <div class="word" data-word="going">going</div>
@@ -694,7 +697,7 @@
                     </div>
                     <div class="sentence-area">
                         <div class="sentence-label">Build your question here:</div>
-                        <div class="drop-zone" data-answer="going-question">
+                        <div class="drop-zone" data-answer="going-question" id="going-question-zone">
                             <div class="drop-zone-content">
                                 <span class="empty-message">Click words above to build the question</span>
                             </div>
@@ -713,7 +716,7 @@
                         <div class="question-number">5</div>
                         <div class="question-text">Unscramble the question:</div>
                     </div>
-                    <div class="scrambled-words">
+                    <div class="scrambled-words" id="time-question-words">
                         <div class="word" data-word="is">is</div>
                         <div class="word" data-word="time">time</div>
                         <div class="word" data-word="it">it</div>
@@ -722,7 +725,7 @@
                     </div>
                     <div class="sentence-area">
                         <div class="sentence-label">Build your question here:</div>
-                        <div class="drop-zone" data-answer="time-question">
+                        <div class="drop-zone" data-answer="time-question" id="time-question-zone">
                             <div class="drop-zone-content">
                                 <span class="empty-message">Click words above to build the question</span>
                             </div>
@@ -743,7 +746,7 @@
                         <div class="answer-number">A</div>
                         <div class="answer-text">Unscramble the answer:</div>
                     </div>
-                    <div class="answer-scrambled-words">
+                    <div class="answer-scrambled-words" id="name-answer-words">
                         <div class="word" data-word="name">name</div>
                         <div class="word" data-word="Sarah">Sarah</div>
                         <div class="word" data-word="is">is</div>
@@ -752,7 +755,7 @@
                     </div>
                     <div class="answer-sentence-area">
                         <div class="answer-sentence-label">Build your answer here:</div>
-                        <div class="answer-drop-zone" data-answer="name-answer">
+                        <div class="answer-drop-zone" data-answer="name-answer" id="name-answer-zone">
                             <div class="answer-drop-zone-content">
                                 <span class="empty-message">Click words above to build the answer</span>
                             </div>
@@ -765,7 +768,7 @@
                         <div class="answer-number">B</div>
                         <div class="answer-text">Unscramble the answer:</div>
                     </div>
-                    <div class="answer-scrambled-words">
+                    <div class="answer-scrambled-words" id="live-answer-words">
                         <div class="word" data-word="near">near</div>
                         <div class="word" data-word="the">the</div>
                         <div class="word" data-word="live">live</div>
@@ -775,7 +778,7 @@
                     </div>
                     <div class="answer-sentence-area">
                         <div class="answer-sentence-label">Build your answer here:</div>
-                        <div class="answer-drop-zone" data-answer="live-answer">
+                        <div class="answer-drop-zone" data-answer="live-answer" id="live-answer-zone">
                             <div class="answer-drop-zone-content">
                                 <span class="empty-message">Click words above to build the answer</span>
                             </div>
@@ -788,7 +791,7 @@
                         <div class="answer-number">C</div>
                         <div class="answer-text">Unscramble the answer:</div>
                     </div>
-                    <div class="answer-scrambled-words">
+                    <div class="answer-scrambled-words" id="age-answer-words">
                         <div class="word" data-word="seven">seven</div>
                         <div class="word" data-word="old">old</div>
                         <div class="word" data-word="am">am</div>
@@ -798,7 +801,7 @@
                     </div>
                     <div class="answer-sentence-area">
                         <div class="answer-sentence-label">Build your answer here:</div>
-                        <div class="answer-drop-zone" data-answer="age-answer">
+                        <div class="answer-drop-zone" data-answer="age-answer" id="age-answer-zone">
                             <div class="answer-drop-zone-content">
                                 <span class="empty-message">Click words above to build the answer</span>
                             </div>
@@ -811,7 +814,7 @@
                         <div class="answer-number">D</div>
                         <div class="answer-text">Unscramble the answer:</div>
                     </div>
-                    <div class="answer-scrambled-words">
+                    <div class="answer-scrambled-words" id="going-answer-words">
                         <div class="word" data-word="school">school</div>
                         <div class="word" data-word="to">to</div>
                         <div class="word" data-word="going">going</div>
@@ -822,7 +825,7 @@
                     </div>
                     <div class="answer-sentence-area">
                         <div class="answer-sentence-label">Build your answer here:</div>
-                        <div class="answer-drop-zone" data-answer="going-answer">
+                        <div class="answer-drop-zone" data-answer="going-answer" id="going-answer-zone">
                             <div class="answer-drop-zone-content">
                                 <span class="empty-message">Click words above to build the answer</span>
                             </div>
@@ -835,7 +838,7 @@
                         <div class="answer-number">E</div>
                         <div class="answer-text">Unscramble the answer:</div>
                     </div>
-                    <div class="answer-scrambled-words">
+                    <div class="answer-scrambled-words" id="time-answer-words">
                         <div class="word" data-word="o'clock">o'clock</div>
                         <div class="word" data-word="is">is</div>
                         <div class="word" data-word="It">It</div>
@@ -844,7 +847,7 @@
                     </div>
                     <div class="answer-sentence-area">
                         <div class="answer-sentence-label">Build your answer here:</div>
-                        <div class="answer-drop-zone" data-answer="time-answer">
+                        <div class="answer-drop-zone" data-answer="time-answer" id="time-answer-zone">
                             <div class="answer-drop-zone-content">
                                 <span class="empty-message">Click words above to build the answer</span>
                             </div>
@@ -874,9 +877,6 @@
             const completionMessage = document.getElementById('completion-message');
             const audioPlayers = document.querySelectorAll('.audio-player');
             const scrollHint = document.getElementById('scroll-hint');
-            const words = document.querySelectorAll('.word');
-            const questionDropZones = document.querySelectorAll('.drop-zone');
-            const answerDropZones = document.querySelectorAll('.answer-drop-zone');
             
             let completedMatches = 0;
             const totalMatches = 5;
@@ -929,20 +929,108 @@
                 });
             });
             
-            // Word selection functionality for both questions and answers
-            words.forEach(word => {
-                word.addEventListener('click', function() {
+            // Initialize word functionality for all word pools
+            initializeWordFunctionality();
+            
+            function initializeWordFunctionality() {
+                // Get all word elements
+                const words = document.querySelectorAll('.word');
+                
+                words.forEach(word => {
+                    // Only add event listeners to words in scrambled areas (not in drop zones)
+                    if (!word.classList.contains('selected')) {
+                        word.addEventListener('click', function() {
+                            const wordText = this.textContent;
+                            const wordData = this.getAttribute('data-word');
+                            
+                            // Find the corresponding drop zone
+                            let dropZone, dropZoneContent;
+                            let wordPool;
+                            
+                            // Check if this is a question word or answer word
+                            const question = this.closest('.question');
+                            const answerItem = this.closest('.answer-item');
+                            
+                            if (question) {
+                                const questionId = question.getAttribute('data-question');
+                                dropZone = document.getElementById(`${questionId}-question-zone`);
+                                dropZoneContent = dropZone.querySelector('.drop-zone-content');
+                                wordPool = document.getElementById(`${questionId}-question-words`);
+                            } else if (answerItem) {
+                                const answerId = answerItem.getAttribute('data-answer');
+                                dropZone = document.getElementById(`${answerId}-answer-zone`);
+                                dropZoneContent = dropZone.querySelector('.answer-drop-zone-content');
+                                wordPool = document.getElementById(`${answerId}-answer-words`);
+                            } else {
+                                return;
+                            }
+                            
+                            // Remove empty message if present
+                            const emptyMessage = dropZoneContent.querySelector('.empty-message');
+                            if (emptyMessage) {
+                                emptyMessage.remove();
+                            }
+                            
+                            // Add the word to the drop zone
+                            const wordElement = document.createElement('span');
+                            wordElement.className = 'word selected';
+                            wordElement.textContent = wordText;
+                            wordElement.setAttribute('data-word', wordData);
+                            wordElement.setAttribute('data-origin', wordPool.id);
+                            
+                            // Add click event to return the word
+                            wordElement.addEventListener('click', function() {
+                                returnWordToPool(this);
+                            });
+                            
+                            dropZoneContent.appendChild(wordElement);
+                            
+                            // Remove the word from the scrambled words list
+                            this.remove();
+                        });
+                    }
+                });
+                
+                // Also initialize words that are already in drop zones (after reset)
+                const selectedWords = document.querySelectorAll('.word.selected');
+                selectedWords.forEach(word => {
+                    word.addEventListener('click', function() {
+                        returnWordToPool(this);
+                    });
+                });
+            }
+            
+            function returnWordToPool(wordElement) {
+                const originPoolId = wordElement.getAttribute('data-origin');
+                const wordPool = document.getElementById(originPoolId);
+                const wordText = wordElement.textContent;
+                const wordData = wordElement.getAttribute('data-word');
+                
+                // Create a new word element for the pool
+                const newWord = document.createElement('div');
+                newWord.className = 'word';
+                newWord.setAttribute('data-word', wordData);
+                newWord.textContent = wordText;
+                
+                // Add click event to the new word
+                newWord.addEventListener('click', function() {
+                    const wordText = this.textContent;
+                    const wordData = this.getAttribute('data-word');
+                    
+                    // Find the corresponding drop zone
+                    let dropZone, dropZoneContent;
+                    
                     // Check if this is a question word or answer word
                     const question = this.closest('.question');
                     const answerItem = this.closest('.answer-item');
                     
-                    let dropZone, dropZoneContent;
-                    
                     if (question) {
-                        dropZone = question.querySelector('.drop-zone');
+                        const questionId = question.getAttribute('data-question');
+                        dropZone = document.getElementById(`${questionId}-question-zone`);
                         dropZoneContent = dropZone.querySelector('.drop-zone-content');
                     } else if (answerItem) {
-                        dropZone = answerItem.querySelector('.answer-drop-zone');
+                        const answerId = answerItem.getAttribute('data-answer');
+                        dropZone = document.getElementById(`${answerId}-answer-zone`);
                         dropZoneContent = dropZone.querySelector('.answer-drop-zone-content');
                     } else {
                         return;
@@ -957,24 +1045,13 @@
                     // Add the word to the drop zone
                     const wordElement = document.createElement('span');
                     wordElement.className = 'word selected';
-                    wordElement.textContent = this.textContent;
-                    wordElement.setAttribute('data-word', this.getAttribute('data-word'));
+                    wordElement.textContent = wordText;
+                    wordElement.setAttribute('data-word', wordData);
+                    wordElement.setAttribute('data-origin', originPoolId);
                     
-                    // Add click event to remove the word
+                    // Add click event to return the word
                     wordElement.addEventListener('click', function() {
-                        this.remove();
-                        
-                        // If drop zone is empty, show empty message
-                        if (dropZoneContent.children.length === 0) {
-                            const emptyMsg = document.createElement('span');
-                            emptyMsg.className = 'empty-message';
-                            if (question) {
-                                emptyMsg.textContent = 'Click words above to build the question';
-                            } else {
-                                emptyMsg.textContent = 'Click words above to build the answer';
-                            }
-                            dropZoneContent.appendChild(emptyMsg);
-                        }
+                        returnWordToPool(this);
                     });
                     
                     dropZoneContent.appendChild(wordElement);
@@ -982,7 +1059,26 @@
                     // Remove the word from the scrambled words list
                     this.remove();
                 });
-            });
+                
+                // Add the word back to the pool
+                wordPool.appendChild(newWord);
+                
+                // Remove the word from the drop zone
+                wordElement.remove();
+                
+                // If drop zone is empty, show empty message
+                const dropZoneContent = wordElement.parentElement;
+                if (dropZoneContent.children.length === 0) {
+                    const emptyMsg = document.createElement('span');
+                    emptyMsg.className = 'empty-message';
+                    if (originPoolId.includes('question')) {
+                        emptyMsg.textContent = 'Click words above to build the question';
+                    } else {
+                        emptyMsg.textContent = 'Click words above to build the answer';
+                    }
+                    dropZoneContent.appendChild(emptyMsg);
+                }
+            }
             
             // Audio player functionality
             audioPlayers.forEach(player => {
@@ -1027,24 +1123,13 @@
                 });
             });
             
-            // Check if all items are placed in drop zones
-            function checkAllPlaced() {
-                const placedQuestions = document.querySelectorAll('.drop-zone .word');
-                const placedAnswers = document.querySelectorAll('.answer-drop-zone .word');
-                
-                if (placedQuestions.length + placedAnswers.length === totalMatches * 2) {
-                    completionMessage.style.display = 'block';
-                } else {
-                    completionMessage.style.display = 'none';
-                }
-            }
-            
             // Check answers
             checkBtn.addEventListener('click', function() {
                 let allCorrect = true;
                 completedMatches = 0;
                 
                 // Check questions
+                const questionDropZones = document.querySelectorAll('.drop-zone');
                 questionDropZones.forEach(zone => {
                     const zoneType = zone.getAttribute('data-answer');
                     const builtSentence = zone.querySelector('.drop-zone-content');
@@ -1070,6 +1155,7 @@
                 });
                 
                 // Check answers
+                const answerDropZones = document.querySelectorAll('.answer-drop-zone');
                 answerDropZones.forEach(zone => {
                     const zoneType = zone.getAttribute('data-answer');
                     const builtSentence = zone.querySelector('.answer-drop-zone-content');
@@ -1115,129 +1201,8 @@
                     player.innerHTML = '▶';
                 });
                 
-                // Clear all question drop zones
-                questionDropZones.forEach(zone => {
-                    const dropZoneContent = zone.querySelector('.drop-zone-content');
-                    dropZoneContent.innerHTML = '<span class="empty-message">Click words above to build the question</span>';
-                    zone.classList.remove('correct', 'incorrect', 'highlight');
-                });
-                
-                // Clear all answer drop zones
-                answerDropZones.forEach(zone => {
-                    const dropZoneContent = zone.querySelector('.answer-drop-zone-content');
-                    dropZoneContent.innerHTML = '<span class="empty-message">Click words above to build the answer</span>';
-                    zone.classList.remove('correct', 'incorrect', 'highlight');
-                });
-                
-                // Reset scrambled words for questions
-                const questions = document.querySelectorAll('.question');
-                questions.forEach(question => {
-                    const questionType = question.getAttribute('data-question');
-                    const scrambledWords = question.querySelector('.scrambled-words');
-                    scrambledWords.innerHTML = '';
-                    
-                    // Add words back based on question type
-                    const wordsData = getWordsForQuestion(questionType);
-                    wordsData.forEach(word => {
-                        const wordElement = document.createElement('div');
-                        wordElement.className = 'word';
-                        wordElement.setAttribute('data-word', word);
-                        wordElement.textContent = word;
-                        
-                        wordElement.addEventListener('click', function() {
-                            const question = this.closest('.question');
-                            const dropZone = question.querySelector('.drop-zone');
-                            const dropZoneContent = dropZone.querySelector('.drop-zone-content');
-                            
-                            // Remove empty message if present
-                            const emptyMessage = dropZoneContent.querySelector('.empty-message');
-                            if (emptyMessage) {
-                                emptyMessage.remove();
-                            }
-                            
-                            // Add the word to the drop zone
-                            const wordElement = document.createElement('span');
-                            wordElement.className = 'word selected';
-                            wordElement.textContent = this.textContent;
-                            wordElement.setAttribute('data-word', this.getAttribute('data-word'));
-                            
-                            // Add click event to remove the word
-                            wordElement.addEventListener('click', function() {
-                                this.remove();
-                                
-                                // If drop zone is empty, show empty message
-                                if (dropZoneContent.children.length === 0) {
-                                    const emptyMsg = document.createElement('span');
-                                    emptyMsg.className = 'empty-message';
-                                    emptyMsg.textContent = 'Click words above to build the question';
-                                    dropZoneContent.appendChild(emptyMsg);
-                                }
-                            });
-                            
-                            dropZoneContent.appendChild(wordElement);
-                            
-                            // Remove the word from the scrambled words list
-                            this.remove();
-                        });
-                        
-                        scrambledWords.appendChild(wordElement);
-                    });
-                });
-                
-                // Reset scrambled words for answers
-                const answerItems = document.querySelectorAll('.answer-item');
-                answerItems.forEach(item => {
-                    const answerType = item.getAttribute('data-answer');
-                    const scrambledWords = item.querySelector('.answer-scrambled-words');
-                    scrambledWords.innerHTML = '';
-                    
-                    // Add words back based on answer type
-                    const wordsData = getWordsForAnswer(answerType);
-                    wordsData.forEach(word => {
-                        const wordElement = document.createElement('div');
-                        wordElement.className = 'word';
-                        wordElement.setAttribute('data-word', word);
-                        wordElement.textContent = word;
-                        
-                        wordElement.addEventListener('click', function() {
-                            const answerItem = this.closest('.answer-item');
-                            const dropZone = answerItem.querySelector('.answer-drop-zone');
-                            const dropZoneContent = dropZone.querySelector('.answer-drop-zone-content');
-                            
-                            // Remove empty message if present
-                            const emptyMessage = dropZoneContent.querySelector('.empty-message');
-                            if (emptyMessage) {
-                                emptyMessage.remove();
-                            }
-                            
-                            // Add the word to the drop zone
-                            const wordElement = document.createElement('span');
-                            wordElement.className = 'word selected';
-                            wordElement.textContent = this.textContent;
-                            wordElement.setAttribute('data-word', this.getAttribute('data-word'));
-                            
-                            // Add click event to remove the word
-                            wordElement.addEventListener('click', function() {
-                                this.remove();
-                                
-                                // If drop zone is empty, show empty message
-                                if (dropZoneContent.children.length === 0) {
-                                    const emptyMsg = document.createElement('span');
-                                    emptyMsg.className = 'empty-message';
-                                    emptyMsg.textContent = 'Click words above to build the answer';
-                                    dropZoneContent.appendChild(emptyMsg);
-                                }
-                            });
-                            
-                            dropZoneContent.appendChild(wordElement);
-                            
-                            // Remove the word from the scrambled words list
-                            this.remove();
-                        });
-                        
-                        scrambledWords.appendChild(wordElement);
-                    });
-                });
+                // Clear all drop zones and reset word pools
+                resetGame();
                 
                 // Hide feedback and completion message
                 feedback.style.display = 'none';
@@ -1248,30 +1213,67 @@
                 window.scrollTo(0, 0);
             });
             
-            // Helper function to get words for each question
-            function getWordsForQuestion(questionType) {
-                const wordsMap = {
-                    'name': ['is', 'name', 'What', 'your', '?'],
-                    'live': ['you', 'do', 'live', 'Where', '?'],
-                    'age': ['old', 'are', 'How', 'you', '?'],
-                    'going': ['are', 'Where', 'going', 'you', '?'],
-                    'time': ['is', 'time', 'it', 'What', '?']
-                };
+            function resetGame() {
+                // Reset questions
+                const questions = [
+                    { id: 'name', words: ['is', 'name', 'What', 'your', '?'] },
+                    { id: 'live', words: ['you', 'do', 'live', 'Where', '?'] },
+                    { id: 'age', words: ['old', 'are', 'How', 'you', '?'] },
+                    { id: 'going', words: ['are', 'Where', 'going', 'you', '?'] },
+                    { id: 'time', words: ['is', 'time', 'it', 'What', '?'] }
+                ];
                 
-                return wordsMap[questionType] || [];
-            }
-            
-            // Helper function to get words for each answer
-            function getWordsForAnswer(answerType) {
-                const wordsMap = {
-                    'name': ['name', 'Sarah', 'is', 'My', '.'],
-                    'live': ['near', 'the', 'live', 'I', 'park', '.'],
-                    'age': ['seven', 'old', 'am', 'I', 'years', '.'],
-                    'going': ['school', 'to', 'going', 'am', 'I', 'my', '.'],
-                    'time': ['o\'clock', 'is', 'It', 'eight', '.']
-                };
+                questions.forEach(q => {
+                    // Clear drop zone
+                    const dropZone = document.getElementById(`${q.id}-question-zone`);
+                    const dropZoneContent = dropZone.querySelector('.drop-zone-content');
+                    dropZoneContent.innerHTML = '<span class="empty-message">Click words above to build the question</span>';
+                    dropZone.classList.remove('correct', 'incorrect', 'highlight');
+                    
+                    // Reset word pool
+                    const wordPool = document.getElementById(`${q.id}-question-words`);
+                    wordPool.innerHTML = '';
+                    
+                    q.words.forEach(word => {
+                        const wordElement = document.createElement('div');
+                        wordElement.className = 'word';
+                        wordElement.setAttribute('data-word', word);
+                        wordElement.textContent = word;
+                        wordPool.appendChild(wordElement);
+                    });
+                });
                 
-                return wordsMap[answerType] || [];
+                // Reset answers
+                const answers = [
+                    { id: 'name', words: ['name', 'Sarah', 'is', 'My', '.'] },
+                    { id: 'live', words: ['near', 'the', 'live', 'I', 'park', '.'] },
+                    { id: 'age', words: ['seven', 'old', 'am', 'I', 'years', '.'] },
+                    { id: 'going', words: ['school', 'to', 'going', 'am', 'I', 'my', '.'] },
+                    { id: 'time', words: ['o\'clock', 'is', 'It', 'eight', '.'] }
+                ];
+                
+                answers.forEach(a => {
+                    // Clear drop zone
+                    const dropZone = document.getElementById(`${a.id}-answer-zone`);
+                    const dropZoneContent = dropZone.querySelector('.answer-drop-zone-content');
+                    dropZoneContent.innerHTML = '<span class="empty-message">Click words above to build the answer</span>';
+                    dropZone.classList.remove('correct', 'incorrect', 'highlight');
+                    
+                    // Reset word pool
+                    const wordPool = document.getElementById(`${a.id}-answer-words`);
+                    wordPool.innerHTML = '';
+                    
+                    a.words.forEach(word => {
+                        const wordElement = document.createElement('div');
+                        wordElement.className = 'word';
+                        wordElement.setAttribute('data-word', word);
+                        wordElement.textContent = word;
+                        wordPool.appendChild(wordElement);
+                    });
+                });
+                
+                // Reinitialize word functionality
+                initializeWordFunctionality();
             }
             
             // Prevent context menu on long press for better mobile experience
