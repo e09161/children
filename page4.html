@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sentence Builder - Unscramble the Words</title>
+    <title>Sentence Builder - Unscramble Questions & Answers</title>
     <style>
         * {
             box-sizing: border-box;
@@ -169,6 +169,7 @@
             display: flex;
             flex-direction: column;
             gap: 10px;
+            margin-bottom: 15px;
         }
         
         .sentence-label {
@@ -287,41 +288,23 @@
             background: #27ae60;
         }
         
-        .draggable {
+        .answer-item {
             background-color: white;
-            border: 2px solid #3498db;
+            border: 2px solid #2ecc71;
             border-radius: 8px;
             padding: 14px;
-            cursor: grab;
             transition: all 0.3s ease;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             word-wrap: break-word;
             overflow-wrap: break-word;
             font-size: 1rem;
             line-height: 1.3;
-            -webkit-user-select: none;
-            user-select: none;
-            touch-action: none;
         }
         
-        .draggable:hover, .draggable:active {
-            background-color: #e3f2fd;
-            transform: translateY(-2px);
-        }
-        
-        .draggable.dragging {
-            opacity: 0.7;
-            transform: scale(0.98);
-            cursor: grabbing;
-        }
-        
-        .draggable.dragging-mobile {
-            opacity: 0.7;
-            transform: scale(0.98);
-            position: fixed;
-            z-index: 1000;
-            pointer-events: none;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        .answer-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
         }
         
         .answer-number {
@@ -345,19 +328,72 @@
             overflow-wrap: break-word;
         }
         
-        .dropped-answer {
+        .answer-scrambled-words {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #f0fff4;
+            border-radius: 8px;
+        }
+        
+        .answer-sentence-area {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .answer-sentence-label {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            font-weight: 500;
+        }
+        
+        .answer-drop-zone {
+            min-height: 60px;
+            border: 2px dashed #bdc3c7;
+            border-radius: 8px;
+            padding: 12px;
+            transition: all 0.3s ease;
             display: flex;
             align-items: center;
-            width: 100%;
-            padding: 6px 0;
+            background-color: #fafbfc;
+            touch-action: none;
+            flex-wrap: wrap;
+            gap: 6px;
         }
         
-        .dropped-answer .answer-number {
-            margin-right: 10px;
+        .answer-drop-zone.highlight {
+            background-color: #e1f5fe;
+            border-color: #4fc3f7;
+            transform: scale(1.02);
         }
         
-        .dropped-answer .answer-text {
+        .answer-drop-zone.correct {
+            background-color: #e8f5e9;
+            border-color: #66bb6a;
+            border-style: solid;
+        }
+        
+        .answer-drop-zone.incorrect {
+            background-color: #ffebee;
+            border-color: #ef5350;
+            border-style: solid;
+        }
+        
+        .answer-drop-zone-content {
             flex: 1;
+            display: flex;
+            align-items: center;
+            min-height: 40px;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            white-space: normal;
+            font-size: 1rem;
+            line-height: 1.3;
+            flex-wrap: wrap;
+            gap: 6px;
         }
         
         .feedback {
@@ -525,13 +561,13 @@
         
         /* Touch device optimizations */
         @media (hover: none) and (pointer: coarse) {
-            .draggable:hover {
+            .word:hover {
                 transform: none;
-                background-color: white;
+                background-color: #e3f2fd;
             }
             
-            .draggable:active {
-                background-color: #e3f2fd;
+            .word:active {
+                background-color: #bbdefb;
                 transform: scale(0.98);
             }
             
@@ -548,14 +584,14 @@
 <body>
     <div class="container">
         <header>
-            <h1>Sentence Builder - Unscramble the Words</h1>
-            <p>Rearrange the scrambled words to form correct sentences</p>
+            <h1>Sentence Builder - Unscramble Questions & Answers</h1>
+            <p>Rearrange the scrambled words to form correct questions and answers</p>
         </header>
         
         <div class="instructions">
-            <p>🎯 Click on the scrambled words to build sentences in the drop zones. You can also drag and drop the complete answers.</p>
-            <p class="scroll-hint" id="scroll-hint">💡 The page will automatically scroll when dragging items to help you reach all questions.</p>
-            <p class="mobile-tip">📱 On mobile: Tap and hold to drag answers, or tap words to build sentences</p>
+            <p>🎯 Click on the scrambled words to build sentences. Each audio contains both the question and answer.</p>
+            <p class="scroll-hint" id="scroll-hint">💡 Scroll to see all questions and answers.</p>
+            <p class="mobile-tip">📱 On mobile: Tap words to build sentences</p>
         </div>
         
         <div class="game-area">
@@ -563,7 +599,7 @@
                 <div class="question" data-question="name">
                     <div class="question-header">
                         <div class="question-number">1</div>
-                        <div class="question-text">Unscramble these words:</div>
+                        <div class="question-text">Unscramble the question:</div>
                     </div>
                     <div class="scrambled-words">
                         <div class="word" data-word="is">is</div>
@@ -573,15 +609,15 @@
                         <div class="word" data-word="?">?</div>
                     </div>
                     <div class="sentence-area">
-                        <div class="sentence-label">Build your sentence here:</div>
-                        <div class="drop-zone" data-answer="name">
+                        <div class="sentence-label">Build your question here:</div>
+                        <div class="drop-zone" data-answer="name-question">
                             <div class="drop-zone-content">
-                                <span class="empty-message">Click words above to build your sentence</span>
+                                <span class="empty-message">Click words above to build the question</span>
                             </div>
                         </div>
                     </div>
                     <div class="audio-controls">
-                        <div class="audio-text">Listen to the question:</div>
+                        <div class="audio-text">Listen to question and answer:</div>
                         <div class="audio-player" data-audio="q31.mp3">
                             <span class="audio-icon">▶</span>
                         </div>
@@ -591,7 +627,7 @@
                 <div class="question" data-question="live">
                     <div class="question-header">
                         <div class="question-number">2</div>
-                        <div class="question-text">Unscramble these words:</div>
+                        <div class="question-text">Unscramble the question:</div>
                     </div>
                     <div class="scrambled-words">
                         <div class="word" data-word="you">you</div>
@@ -601,15 +637,15 @@
                         <div class="word" data-word="?">?</div>
                     </div>
                     <div class="sentence-area">
-                        <div class="sentence-label">Build your sentence here:</div>
-                        <div class="drop-zone" data-answer="live">
+                        <div class="sentence-label">Build your question here:</div>
+                        <div class="drop-zone" data-answer="live-question">
                             <div class="drop-zone-content">
-                                <span class="empty-message">Click words above to build your sentence</span>
+                                <span class="empty-message">Click words above to build the question</span>
                             </div>
                         </div>
                     </div>
                     <div class="audio-controls">
-                        <div class="audio-text">Listen to the question:</div>
+                        <div class="audio-text">Listen to question and answer:</div>
                         <div class="audio-player" data-audio="q32.mp3">
                             <span class="audio-icon">▶</span>
                         </div>
@@ -619,7 +655,7 @@
                 <div class="question" data-question="age">
                     <div class="question-header">
                         <div class="question-number">3</div>
-                        <div class="question-text">Unscramble these words:</div>
+                        <div class="question-text">Unscramble the question:</div>
                     </div>
                     <div class="scrambled-words">
                         <div class="word" data-word="old">old</div>
@@ -629,15 +665,15 @@
                         <div class="word" data-word="?">?</div>
                     </div>
                     <div class="sentence-area">
-                        <div class="sentence-label">Build your sentence here:</div>
-                        <div class="drop-zone" data-answer="age">
+                        <div class="sentence-label">Build your question here:</div>
+                        <div class="drop-zone" data-answer="age-question">
                             <div class="drop-zone-content">
-                                <span class="empty-message">Click words above to build your sentence</span>
+                                <span class="empty-message">Click words above to build the question</span>
                             </div>
                         </div>
                     </div>
                     <div class="audio-controls">
-                        <div class="audio-text">Listen to the question:</div>
+                        <div class="audio-text">Listen to question and answer:</div>
                         <div class="audio-player" data-audio="q33.mp3">
                             <span class="audio-icon">▶</span>
                         </div>
@@ -647,7 +683,7 @@
                 <div class="question" data-question="going">
                     <div class="question-header">
                         <div class="question-number">4</div>
-                        <div class="question-text">Unscramble these words:</div>
+                        <div class="question-text">Unscramble the question:</div>
                     </div>
                     <div class="scrambled-words">
                         <div class="word" data-word="are">are</div>
@@ -657,15 +693,15 @@
                         <div class="word" data-word="?">?</div>
                     </div>
                     <div class="sentence-area">
-                        <div class="sentence-label">Build your sentence here:</div>
-                        <div class="drop-zone" data-answer="going">
+                        <div class="sentence-label">Build your question here:</div>
+                        <div class="drop-zone" data-answer="going-question">
                             <div class="drop-zone-content">
-                                <span class="empty-message">Click words above to build your sentence</span>
+                                <span class="empty-message">Click words above to build the question</span>
                             </div>
                         </div>
                     </div>
                     <div class="audio-controls">
-                        <div class="audio-text">Listen to the question:</div>
+                        <div class="audio-text">Listen to question and answer:</div>
                         <div class="audio-player" data-audio="q34.mp3">
                             <span class="audio-icon">▶</span>
                         </div>
@@ -675,7 +711,7 @@
                 <div class="question" data-question="time">
                     <div class="question-header">
                         <div class="question-number">5</div>
-                        <div class="question-text">Unscramble these words:</div>
+                        <div class="question-text">Unscramble the question:</div>
                     </div>
                     <div class="scrambled-words">
                         <div class="word" data-word="is">is</div>
@@ -685,15 +721,15 @@
                         <div class="word" data-word="?">?</div>
                     </div>
                     <div class="sentence-area">
-                        <div class="sentence-label">Build your sentence here:</div>
-                        <div class="drop-zone" data-answer="time">
+                        <div class="sentence-label">Build your question here:</div>
+                        <div class="drop-zone" data-answer="time-question">
                             <div class="drop-zone-content">
-                                <span class="empty-message">Click words above to build your sentence</span>
+                                <span class="empty-message">Click words above to build the question</span>
                             </div>
                         </div>
                     </div>
                     <div class="audio-controls">
-                        <div class="audio-text">Listen to the question:</div>
+                        <div class="audio-text">Listen to question and answer:</div>
                         <div class="audio-player" data-audio="q35.mp3">
                             <span class="audio-icon">▶</span>
                         </div>
@@ -702,25 +738,118 @@
             </div>
             
             <div class="answers">
-                <div class="draggable" draggable="true" data-answer="name">
-                    <span class="answer-number">A</span>
-                    <span class="answer-text">What is your name?</span>
+                <div class="answer-item" data-answer="name">
+                    <div class="answer-header">
+                        <div class="answer-number">A</div>
+                        <div class="answer-text">Unscramble the answer:</div>
+                    </div>
+                    <div class="answer-scrambled-words">
+                        <div class="word" data-word="name">name</div>
+                        <div class="word" data-word="Sarah">Sarah</div>
+                        <div class="word" data-word="is">is</div>
+                        <div class="word" data-word="My">My</div>
+                        <div class="word" data-word=".">.</div>
+                    </div>
+                    <div class="answer-sentence-area">
+                        <div class="answer-sentence-label">Build your answer here:</div>
+                        <div class="answer-drop-zone" data-answer="name-answer">
+                            <div class="answer-drop-zone-content">
+                                <span class="empty-message">Click words above to build the answer</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="draggable" draggable="true" data-answer="live">
-                    <span class="answer-number">B</span>
-                    <span class="answer-text">Where do you live?</span>
+                
+                <div class="answer-item" data-answer="live">
+                    <div class="answer-header">
+                        <div class="answer-number">B</div>
+                        <div class="answer-text">Unscramble the answer:</div>
+                    </div>
+                    <div class="answer-scrambled-words">
+                        <div class="word" data-word="near">near</div>
+                        <div class="word" data-word="the">the</div>
+                        <div class="word" data-word="live">live</div>
+                        <div class="word" data-word="I">I</div>
+                        <div class="word" data-word="park">park</div>
+                        <div class="word" data-word=".">.</div>
+                    </div>
+                    <div class="answer-sentence-area">
+                        <div class="answer-sentence-label">Build your answer here:</div>
+                        <div class="answer-drop-zone" data-answer="live-answer">
+                            <div class="answer-drop-zone-content">
+                                <span class="empty-message">Click words above to build the answer</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="draggable" draggable="true" data-answer="age">
-                    <span class="answer-number">C</span>
-                    <span class="answer-text">How old are you?</span>
+                
+                <div class="answer-item" data-answer="age">
+                    <div class="answer-header">
+                        <div class="answer-number">C</div>
+                        <div class="answer-text">Unscramble the answer:</div>
+                    </div>
+                    <div class="answer-scrambled-words">
+                        <div class="word" data-word="seven">seven</div>
+                        <div class="word" data-word="old">old</div>
+                        <div class="word" data-word="am">am</div>
+                        <div class="word" data-word="I">I</div>
+                        <div class="word" data-word="years">years</div>
+                        <div class="word" data-word=".">.</div>
+                    </div>
+                    <div class="answer-sentence-area">
+                        <div class="answer-sentence-label">Build your answer here:</div>
+                        <div class="answer-drop-zone" data-answer="age-answer">
+                            <div class="answer-drop-zone-content">
+                                <span class="empty-message">Click words above to build the answer</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="draggable" draggable="true" data-answer="going">
-                    <span class="answer-number">D</span>
-                    <span class="answer-text">Where are you going?</span>
+                
+                <div class="answer-item" data-answer="going">
+                    <div class="answer-header">
+                        <div class="answer-number">D</div>
+                        <div class="answer-text">Unscramble the answer:</div>
+                    </div>
+                    <div class="answer-scrambled-words">
+                        <div class="word" data-word="school">school</div>
+                        <div class="word" data-word="to">to</div>
+                        <div class="word" data-word="going">going</div>
+                        <div class="word" data-word="am">am</div>
+                        <div class="word" data-word="I">I</div>
+                        <div class="word" data-word="my">my</div>
+                        <div class="word" data-word=".">.</div>
+                    </div>
+                    <div class="answer-sentence-area">
+                        <div class="answer-sentence-label">Build your answer here:</div>
+                        <div class="answer-drop-zone" data-answer="going-answer">
+                            <div class="answer-drop-zone-content">
+                                <span class="empty-message">Click words above to build the answer</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="draggable" draggable="true" data-answer="time">
-                    <span class="answer-number">E</span>
-                    <span class="answer-text">What time is it?</span>
+                
+                <div class="answer-item" data-answer="time">
+                    <div class="answer-header">
+                        <div class="answer-number">E</div>
+                        <div class="answer-text">Unscramble the answer:</div>
+                    </div>
+                    <div class="answer-scrambled-words">
+                        <div class="word" data-word="o'clock">o'clock</div>
+                        <div class="word" data-word="is">is</div>
+                        <div class="word" data-word="It">It</div>
+                        <div class="word" data-word="eight">eight</div>
+                        <div class="word" data-word=".">.</div>
+                    </div>
+                    <div class="answer-sentence-area">
+                        <div class="answer-sentence-label">Build your answer here:</div>
+                        <div class="answer-drop-zone" data-answer="time-answer">
+                            <div class="answer-drop-zone-content">
+                                <span class="empty-message">Click words above to build the answer</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -728,7 +857,7 @@
         <div class="feedback" id="feedback"></div>
         
         <div class="completion-message" id="completion-message">
-            Great job! You've successfully built all the sentences!
+            Great job! You've successfully built all the questions and answers!
         </div>
         
         <div class="controls">
@@ -739,8 +868,6 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const draggables = document.querySelectorAll('.draggable');
-            const dropZones = document.querySelectorAll('.drop-zone');
             const checkBtn = document.getElementById('check-btn');
             const resetBtn = document.getElementById('reset-btn');
             const feedback = document.getElementById('feedback');
@@ -748,29 +875,27 @@
             const audioPlayers = document.querySelectorAll('.audio-player');
             const scrollHint = document.getElementById('scroll-hint');
             const words = document.querySelectorAll('.word');
+            const questionDropZones = document.querySelectorAll('.drop-zone');
+            const answerDropZones = document.querySelectorAll('.answer-drop-zone');
             
-            let draggedItem = null;
             let completedMatches = 0;
             const totalMatches = 5;
-            let scrollInterval = null;
-            let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
             
             // Store correct answer mappings
-            const correctAnswers = {
-                'name': 'What is your name?',
-                'live': 'Where do you live?', 
-                'age': 'How old are you?',
-                'going': 'Where are you going?',
-                'time': 'What time is it?'
+            const correctQuestions = {
+                'name-question': 'What is your name?',
+                'live-question': 'Where do you live?', 
+                'age-question': 'How old are you?',
+                'going-question': 'Where are you going?',
+                'time-question': 'What time is it?'
             };
             
-            // Store correct answer letter mappings
-            const correctAnswerLetters = {
-                'name': 'A',
-                'live': 'B', 
-                'age': 'C',
-                'going': 'D',
-                'time': 'E'
+            const correctAnswers = {
+                'name-answer': 'My name is Sarah.',
+                'live-answer': 'I live near the park.', 
+                'age-answer': 'I am seven years old.',
+                'going-answer': 'I am going to my school.',
+                'time-answer': 'It is eight o\'clock.'
             };
             
             // Show scroll hint on first interaction
@@ -804,12 +929,24 @@
                 });
             });
             
-            // Word selection functionality
+            // Word selection functionality for both questions and answers
             words.forEach(word => {
                 word.addEventListener('click', function() {
+                    // Check if this is a question word or answer word
                     const question = this.closest('.question');
-                    const dropZone = question.querySelector('.drop-zone');
-                    const dropZoneContent = dropZone.querySelector('.drop-zone-content');
+                    const answerItem = this.closest('.answer-item');
+                    
+                    let dropZone, dropZoneContent;
+                    
+                    if (question) {
+                        dropZone = question.querySelector('.drop-zone');
+                        dropZoneContent = dropZone.querySelector('.drop-zone-content');
+                    } else if (answerItem) {
+                        dropZone = answerItem.querySelector('.answer-drop-zone');
+                        dropZoneContent = dropZone.querySelector('.answer-drop-zone-content');
+                    } else {
+                        return;
+                    }
                     
                     // Remove empty message if present
                     const emptyMessage = dropZoneContent.querySelector('.empty-message');
@@ -831,7 +968,11 @@
                         if (dropZoneContent.children.length === 0) {
                             const emptyMsg = document.createElement('span');
                             emptyMsg.className = 'empty-message';
-                            emptyMsg.textContent = 'Click words above to build your sentence';
+                            if (question) {
+                                emptyMsg.textContent = 'Click words above to build the question';
+                            } else {
+                                emptyMsg.textContent = 'Click words above to build the answer';
+                            }
                             dropZoneContent.appendChild(emptyMsg);
                         }
                     });
@@ -842,225 +983,6 @@
                     this.remove();
                 });
             });
-            
-            // Enhanced mobile drag and drop
-            if (isMobile) {
-                setupMobileDragAndDrop();
-            } else {
-                setupDesktopDragAndDrop();
-            }
-            
-            function setupDesktopDragAndDrop() {
-                // Mouse events for desktop
-                draggables.forEach(draggable => {
-                    draggable.addEventListener('dragstart', function(e) {
-                        draggedItem = this;
-                        setTimeout(() => this.classList.add('dragging'), 0);
-                        startIntelligentScrolling(e);
-                    });
-                    
-                    draggable.addEventListener('dragend', function() {
-                        this.classList.remove('dragging');
-                        draggedItem = null;
-                        stopIntelligentScrolling();
-                    });
-                });
-                
-                dropZones.forEach(zone => {
-                    zone.addEventListener('dragover', function(e) {
-                        e.preventDefault();
-                        this.classList.add('highlight');
-                    });
-                    
-                    zone.addEventListener('dragleave', function() {
-                        this.classList.remove('highlight');
-                    });
-                    
-                    zone.addEventListener('drop', function(e) {
-                        e.preventDefault();
-                        this.classList.remove('highlight');
-                        handleDrop(this);
-                    });
-                });
-            }
-            
-            function setupMobileDragAndDrop() {
-                let activeTouch = null;
-                let ghostElement = null;
-                
-                draggables.forEach(draggable => {
-                    draggable.addEventListener('touchstart', function(e) {
-                        e.preventDefault();
-                        if (activeTouch) return; // Ignore if already dragging
-                        
-                        const touch = e.touches[0];
-                        activeTouch = {
-                            id: touch.identifier,
-                            startX: touch.clientX,
-                            startY: touch.clientY,
-                            element: this
-                        };
-                        
-                        draggedItem = this;
-                        this.classList.add('dragging-mobile');
-                        
-                        // Create ghost element for visual feedback
-                        ghostElement = this.cloneNode(true);
-                        ghostElement.style.position = 'fixed';
-                        ghostElement.style.left = (touch.clientX - this.offsetWidth / 2) + 'px';
-                        ghostElement.style.top = (touch.clientY - this.offsetHeight / 2) + 'px';
-                        ghostElement.style.width = this.offsetWidth + 'px';
-                        ghostElement.style.zIndex = '1000';
-                        ghostElement.style.opacity = '0.8';
-                        ghostElement.style.pointerEvents = 'none';
-                        document.body.appendChild(ghostElement);
-                        
-                        startIntelligentScrolling(touch);
-                    }, { passive: false });
-                    
-                    draggable.addEventListener('touchmove', function(e) {
-                        if (!activeTouch) return;
-                        
-                        const touch = Array.from(e.touches).find(t => t.identifier === activeTouch.id);
-                        if (!touch) return;
-                        
-                        e.preventDefault();
-                        
-                        // Update ghost element position
-                        if (ghostElement) {
-                            ghostElement.style.left = (touch.clientX - ghostElement.offsetWidth / 2) + 'px';
-                            ghostElement.style.top = (touch.clientY - ghostElement.offsetHeight / 2) + 'px';
-                        }
-                        
-                        // Highlight drop zones under touch
-                        const elementsUnderTouch = document.elementsFromPoint(touch.clientX, touch.clientY);
-                        const dropZoneUnderTouch = elementsUnderTouch.find(el => el.classList.contains('drop-zone'));
-                        
-                        // Remove highlight from all drop zones
-                        dropZones.forEach(zone => zone.classList.remove('highlight'));
-                        
-                        // Highlight the drop zone under touch
-                        if (dropZoneUnderTouch) {
-                            dropZoneUnderTouch.classList.add('highlight');
-                        }
-                    }, { passive: false });
-                    
-                    draggable.addEventListener('touchend', function(e) {
-                        if (!activeTouch) return;
-                        
-                        const touch = Array.from(e.changedTouches).find(t => t.identifier === activeTouch.id);
-                        if (!touch) return;
-                        
-                        // Find drop zone at release point
-                        const elementsAtRelease = document.elementsFromPoint(touch.clientX, touch.clientY);
-                        const dropZoneAtRelease = elementsAtRelease.find(el => el.classList.contains('drop-zone'));
-                        
-                        if (dropZoneAtRelease) {
-                            handleDrop(dropZoneAtRelease);
-                        }
-                        
-                        // Cleanup
-                        this.classList.remove('dragging-mobile');
-                        if (ghostElement) {
-                            document.body.removeChild(ghostElement);
-                            ghostElement = null;
-                        }
-                        
-                        // Remove highlight from all drop zones
-                        dropZones.forEach(zone => zone.classList.remove('highlight'));
-                        
-                        activeTouch = null;
-                        draggedItem = null;
-                        stopIntelligentScrolling();
-                    }, { passive: false });
-                    
-                    draggable.addEventListener('touchcancel', function() {
-                        // Cleanup on touch cancel
-                        this.classList.remove('dragging-mobile');
-                        if (ghostElement) {
-                            document.body.removeChild(ghostElement);
-                            ghostElement = null;
-                        }
-                        dropZones.forEach(zone => zone.classList.remove('highlight'));
-                        activeTouch = null;
-                        draggedItem = null;
-                        stopIntelligentScrolling();
-                    });
-                });
-            }
-            
-            // Handle drop logic
-            function handleDrop(zone) {
-                if (!draggedItem) return;
-                
-                // Remove from previous drop zone if any
-                if (draggedItem.parentElement.classList.contains('drop-zone')) {
-                    document.querySelector('.answers').appendChild(draggedItem);
-                }
-                
-                // Update drop zone content
-                const dropZoneContent = zone.querySelector('.drop-zone-content');
-                dropZoneContent.innerHTML = '';
-                
-                // Create a properly formatted dropped answer
-                const droppedAnswer = document.createElement('div');
-                droppedAnswer.className = 'dropped-answer';
-                
-                const answerNumber = document.createElement('span');
-                answerNumber.className = 'answer-number';
-                answerNumber.textContent = draggedItem.querySelector('.answer-number').textContent;
-                
-                const answerText = document.createElement('span');
-                answerText.className = 'answer-text';
-                answerText.textContent = draggedItem.querySelector('.answer-text').textContent;
-                
-                droppedAnswer.appendChild(answerNumber);
-                droppedAnswer.appendChild(answerText);
-                dropZoneContent.appendChild(droppedAnswer);
-                
-                // Store the answer data in the drop zone for later checking
-                zone.setAttribute('data-dropped-answer', draggedItem.querySelector('.answer-number').textContent);
-                
-                // Remove the original draggable from answers
-                draggedItem.remove();
-                
-                // Check if all items are placed
-                checkAllPlaced();
-            }
-            
-            // Intelligent scrolling function
-            function startIntelligentScrolling(startEvent) {
-                const scrollSpeed = 20;
-                const scrollThreshold = 80;
-                
-                scrollInterval = setInterval(() => {
-                    if (!draggedItem) return;
-                    
-                    let clientY;
-                    if (startEvent.clientY !== undefined) {
-                        clientY = startEvent.clientY;
-                    } else if (startEvent.touches && startEvent.touches[0]) {
-                        clientY = startEvent.touches[0].clientY;
-                    } else {
-                        return;
-                    }
-                    
-                    const windowHeight = window.innerHeight;
-                    
-                    if (clientY > windowHeight - scrollThreshold) {
-                        window.scrollBy(0, scrollSpeed);
-                    } else if (clientY < scrollThreshold) {
-                        window.scrollBy(0, -scrollSpeed);
-                    }
-                }, 16);
-            }
-            
-            function stopIntelligentScrolling() {
-                if (scrollInterval) {
-                    clearInterval(scrollInterval);
-                    scrollInterval = null;
-                }
-            }
             
             // Audio player functionality
             audioPlayers.forEach(player => {
@@ -1107,8 +1029,10 @@
             
             // Check if all items are placed in drop zones
             function checkAllPlaced() {
-                const placedItems = document.querySelectorAll('.drop-zone .dropped-answer');
-                if (placedItems.length === totalMatches) {
+                const placedQuestions = document.querySelectorAll('.drop-zone .word');
+                const placedAnswers = document.querySelectorAll('.answer-drop-zone .word');
+                
+                if (placedQuestions.length + placedAnswers.length === totalMatches * 2) {
                     completionMessage.style.display = 'block';
                 } else {
                     completionMessage.style.display = 'none';
@@ -1120,19 +1044,17 @@
                 let allCorrect = true;
                 completedMatches = 0;
                 
-                dropZones.forEach(zone => {
-                    const questionType = zone.getAttribute('data-answer');
-                    const droppedAnswerNumber = zone.getAttribute('data-dropped-answer');
-                    const correctAnswerNumber = correctAnswerLetters[questionType];
-                    
-                    // Check if sentence was built from words
+                // Check questions
+                questionDropZones.forEach(zone => {
+                    const zoneType = zone.getAttribute('data-answer');
                     const builtSentence = zone.querySelector('.drop-zone-content');
+                    
                     if (builtSentence && builtSentence.querySelector('.word')) {
                         // Get the text content of the built sentence
                         const words = Array.from(builtSentence.querySelectorAll('.word'));
                         const builtText = words.map(word => word.textContent).join(' ');
                         
-                        if (builtText === correctAnswers[questionType]) {
+                        if (builtText === correctQuestions[zoneType]) {
                             zone.classList.add('correct');
                             zone.classList.remove('incorrect');
                             completedMatches++;
@@ -1141,10 +1063,23 @@
                             zone.classList.remove('correct');
                             allCorrect = false;
                         }
-                    } 
-                    // Check if answer was dragged
-                    else if (droppedAnswerNumber) {
-                        if (droppedAnswerNumber === correctAnswerNumber) {
+                    } else {
+                        allCorrect = false;
+                        zone.classList.add('incorrect');
+                    }
+                });
+                
+                // Check answers
+                answerDropZones.forEach(zone => {
+                    const zoneType = zone.getAttribute('data-answer');
+                    const builtSentence = zone.querySelector('.answer-drop-zone-content');
+                    
+                    if (builtSentence && builtSentence.querySelector('.word')) {
+                        // Get the text content of the built sentence
+                        const words = Array.from(builtSentence.querySelectorAll('.word'));
+                        const builtText = words.map(word => word.textContent).join(' ');
+                        
+                        if (builtText === correctAnswers[zoneType]) {
                             zone.classList.add('correct');
                             zone.classList.remove('incorrect');
                             completedMatches++;
@@ -1160,10 +1095,10 @@
                 });
                 
                 if (allCorrect) {
-                    feedback.textContent = '🎉 Excellent! All sentences are correct! 🎉';
+                    feedback.textContent = '🎉 Excellent! All questions and answers are correct! 🎉';
                     feedback.className = 'feedback correct';
                 } else {
-                    feedback.textContent = `${completedMatches} out of ${totalMatches} sentences are correct. Try again!`;
+                    feedback.textContent = `${completedMatches} out of ${totalMatches * 2} sentences are correct. Try again!`;
                     feedback.className = 'feedback incorrect';
                 }
             });
@@ -1180,15 +1115,21 @@
                     player.innerHTML = '▶';
                 });
                 
-                // Clear all drop zones
-                dropZones.forEach(zone => {
+                // Clear all question drop zones
+                questionDropZones.forEach(zone => {
                     const dropZoneContent = zone.querySelector('.drop-zone-content');
-                    dropZoneContent.innerHTML = '<span class="empty-message">Click words above to build your sentence</span>';
+                    dropZoneContent.innerHTML = '<span class="empty-message">Click words above to build the question</span>';
                     zone.classList.remove('correct', 'incorrect', 'highlight');
-                    zone.removeAttribute('data-dropped-answer');
                 });
                 
-                // Reset scrambled words
+                // Clear all answer drop zones
+                answerDropZones.forEach(zone => {
+                    const dropZoneContent = zone.querySelector('.answer-drop-zone-content');
+                    dropZoneContent.innerHTML = '<span class="empty-message">Click words above to build the answer</span>';
+                    zone.classList.remove('correct', 'incorrect', 'highlight');
+                });
+                
+                // Reset scrambled words for questions
                 const questions = document.querySelectorAll('.question');
                 questions.forEach(question => {
                     const questionType = question.getAttribute('data-question');
@@ -1228,7 +1169,7 @@
                                 if (dropZoneContent.children.length === 0) {
                                     const emptyMsg = document.createElement('span');
                                     emptyMsg.className = 'empty-message';
-                                    emptyMsg.textContent = 'Click words above to build your sentence';
+                                    emptyMsg.textContent = 'Click words above to build the question';
                                     dropZoneContent.appendChild(emptyMsg);
                                 }
                             });
@@ -1243,44 +1184,60 @@
                     });
                 });
                 
-                // Reset answers container
-                const answersContainer = document.querySelector('.answers');
-                answersContainer.innerHTML = '';
-                
-                // Recreate all draggable answers
-                const answers = [
-                    { answer: 'name', number: 'A', text: 'What is your name?' },
-                    { answer: 'live', number: 'B', text: 'Where do you live?' },
-                    { answer: 'age', number: 'C', text: 'How old are you?' },
-                    { answer: 'going', number: 'D', text: 'Where are you going?' },
-                    { answer: 'time', number: 'E', text: 'What time is it?' }
-                ];
-                
-                answers.forEach(item => {
-                    const draggable = document.createElement('div');
-                    draggable.className = 'draggable';
-                    draggable.setAttribute('draggable', 'true');
-                    draggable.setAttribute('data-answer', item.answer);
+                // Reset scrambled words for answers
+                const answerItems = document.querySelectorAll('.answer-item');
+                answerItems.forEach(item => {
+                    const answerType = item.getAttribute('data-answer');
+                    const scrambledWords = item.querySelector('.answer-scrambled-words');
+                    scrambledWords.innerHTML = '';
                     
-                    const answerNumber = document.createElement('span');
-                    answerNumber.className = 'answer-number';
-                    answerNumber.textContent = item.number;
-                    
-                    const answerText = document.createElement('span');
-                    answerText.className = 'answer-text';
-                    answerText.textContent = item.text;
-                    
-                    draggable.appendChild(answerNumber);
-                    draggable.appendChild(answerText);
-                    answersContainer.appendChild(draggable);
+                    // Add words back based on answer type
+                    const wordsData = getWordsForAnswer(answerType);
+                    wordsData.forEach(word => {
+                        const wordElement = document.createElement('div');
+                        wordElement.className = 'word';
+                        wordElement.setAttribute('data-word', word);
+                        wordElement.textContent = word;
+                        
+                        wordElement.addEventListener('click', function() {
+                            const answerItem = this.closest('.answer-item');
+                            const dropZone = answerItem.querySelector('.answer-drop-zone');
+                            const dropZoneContent = dropZone.querySelector('.answer-drop-zone-content');
+                            
+                            // Remove empty message if present
+                            const emptyMessage = dropZoneContent.querySelector('.empty-message');
+                            if (emptyMessage) {
+                                emptyMessage.remove();
+                            }
+                            
+                            // Add the word to the drop zone
+                            const wordElement = document.createElement('span');
+                            wordElement.className = 'word selected';
+                            wordElement.textContent = this.textContent;
+                            wordElement.setAttribute('data-word', this.getAttribute('data-word'));
+                            
+                            // Add click event to remove the word
+                            wordElement.addEventListener('click', function() {
+                                this.remove();
+                                
+                                // If drop zone is empty, show empty message
+                                if (dropZoneContent.children.length === 0) {
+                                    const emptyMsg = document.createElement('span');
+                                    emptyMsg.className = 'empty-message';
+                                    emptyMsg.textContent = 'Click words above to build the answer';
+                                    dropZoneContent.appendChild(emptyMsg);
+                                }
+                            });
+                            
+                            dropZoneContent.appendChild(wordElement);
+                            
+                            // Remove the word from the scrambled words list
+                            this.remove();
+                        });
+                        
+                        scrambledWords.appendChild(wordElement);
+                    });
                 });
-                
-                // Reinitialize drag and drop
-                if (isMobile) {
-                    setupMobileDragAndDrop();
-                } else {
-                    setupDesktopDragAndDrop();
-                }
                 
                 // Hide feedback and completion message
                 feedback.style.display = 'none';
@@ -1302,6 +1259,19 @@
                 };
                 
                 return wordsMap[questionType] || [];
+            }
+            
+            // Helper function to get words for each answer
+            function getWordsForAnswer(answerType) {
+                const wordsMap = {
+                    'name': ['name', 'Sarah', 'is', 'My', '.'],
+                    'live': ['near', 'the', 'live', 'I', 'park', '.'],
+                    'age': ['seven', 'old', 'am', 'I', 'years', '.'],
+                    'going': ['school', 'to', 'going', 'am', 'I', 'my', '.'],
+                    'time': ['o\'clock', 'is', 'It', 'eight', '.']
+                };
+                
+                return wordsMap[answerType] || [];
             }
             
             // Prevent context menu on long press for better mobile experience
