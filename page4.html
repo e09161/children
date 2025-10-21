@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Restaurant Reservation Dialog Ordering</title>
+    <title>Sentence Builder - Unscramble Questions & Answers</title>
     <style>
         * {
             box-sizing: border-box;
@@ -25,7 +25,7 @@
         
         .container {
             width: 100%;
-            max-width: 800px;
+            max-width: 900px;
             background-color: white;
             border-radius: 20px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
@@ -55,173 +55,466 @@
             border-left: 4px solid #3498db;
         }
         
-        .dialog-container {
+        .game-area {
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            margin-bottom: 20px;
+            gap: 20px;
+        }
+        
+        @media (min-width: 768px) {
+            .game-area {
+                flex-direction: row;
+            }
+        }
+        
+        .questions {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
             max-height: 500px;
             overflow-y: auto;
             padding-right: 8px;
         }
         
-        /* Custom scrollbar */
-        .dialog-container::-webkit-scrollbar {
+        /* Custom scrollbar for questions */
+        .questions::-webkit-scrollbar {
             width: 6px;
         }
         
-        .dialog-container::-webkit-scrollbar-track {
+        .questions::-webkit-scrollbar-track {
             background: #f1f1f1;
             border-radius: 8px;
         }
         
-        .dialog-container::-webkit-scrollbar-thumb {
+        .questions::-webkit-scrollbar-thumb {
             background: #3498db;
             border-radius: 8px;
         }
         
-        .dialog-container::-webkit-scrollbar-thumb:hover {
+        .questions::-webkit-scrollbar-thumb:hover {
             background: #2980b9;
         }
         
-        .dialog-line {
+        .question {
+            background-color: #f8f9fa;
+            border: 2px solid #bdc3c7;
+            border-radius: 10px;
+            padding: 15px;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        
+        .question-header {
             display: flex;
             align-items: center;
-            padding: 12px 15px;
-            background-color: #f8f9fa;
-            border-radius: 8px;
-            border: 1px solid #e1e4e8;
-            cursor: move;
-            transition: all 0.2s ease;
-            user-select: none;
+            margin-bottom: 15px;
         }
         
-        .dialog-line:hover {
-            background-color: #e9ecef;
-            transform: translateY(-2px);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        
-        .dialog-line.dragging {
-            opacity: 0.5;
-            background-color: #d0ebff;
-        }
-        
-        .audio-btn {
-            background-color: #4a6fa5;
+        .question-number {
+            background-color: #3498db;
             color: white;
-            border: none;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            margin-right: 15px;
-            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 16px;
-            transition: background-color 0.2s;
+            font-weight: bold;
+            margin-right: 12px;
             flex-shrink: 0;
+            font-size: 1rem;
         }
         
-        .audio-btn:hover {
-            background-color: #3a5a80;
+        .question-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2c3e50;
+            line-height: 1.3;
         }
         
-        .audio-btn.playing {
-            background-color: #e74c3c;
+        .scrambled-words {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: #f0f7ff;
+            border-radius: 8px;
+            min-height: 50px;
         }
         
-        .dialog-text {
+        .word {
+            background-color: #e3f2fd;
+            border: 1px solid #3498db;
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            height: fit-content;
+        }
+        
+        .word:hover {
+            background-color: #bbdefb;
+            transform: translateY(-2px);
+        }
+        
+        .word.selected {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        .sentence-area {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .sentence-label {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            font-weight: 500;
+        }
+        
+        .drop-zone {
+            min-height: 60px;
+            border: 2px dashed #bdc3c7;
+            border-radius: 8px;
+            padding: 12px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            background-color: #fafbfc;
+            touch-action: none;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        
+        .drop-zone.highlight {
+            background-color: #e1f5fe;
+            border-color: #4fc3f7;
+            transform: scale(1.02);
+        }
+        
+        .drop-zone.correct {
+            background-color: #e8f5e9;
+            border-color: #66bb6a;
+            border-style: solid;
+        }
+        
+        .drop-zone.incorrect {
+            background-color: #ffebee;
+            border-color: #ef5350;
+            border-style: solid;
+        }
+        
+        .drop-zone-content {
             flex: 1;
-            font-size: 16px;
+            display: flex;
+            align-items: center;
+            min-height: 40px;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            white-space: normal;
+            font-size: 1rem;
+            line-height: 1.3;
+            flex-wrap: wrap;
+            gap: 6px;
         }
         
-        .controls {
+        .audio-controls {
             display: flex;
             justify-content: space-between;
-            margin-top: 20px;
-            flex-wrap: wrap;
-            gap: 10px;
+            align-items: center;
+            margin-top: 10px;
         }
         
-        button {
-            background-color: #4a6fa5;
+        .audio-player {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #3498db;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             color: white;
-            border: none;
-            border-radius: 5px;
-            padding: 12px 20px;
-            font-size: 16px;
             cursor: pointer;
-            transition: background-color 0.2s;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+            font-size: 1.2rem;
+            border: none;
+            -webkit-touch-callout: none;
+        }
+        
+        .audio-player:hover, .audio-player:active {
+            background-color: #2980b9;
+            transform: scale(1.1);
+        }
+        
+        .audio-text {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            font-style: italic;
+        }
+        
+        .answers {
             flex: 1;
-            min-width: 140px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 8px;
         }
         
-        button:hover {
-            background-color: #3a5a80;
+        /* Custom scrollbar for answers */
+        .answers::-webkit-scrollbar {
+            width: 6px;
         }
         
-        #check-btn {
-            background: linear-gradient(to right, #2ecc71, #1abc9c);
+        .answers::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 8px;
         }
         
-        #check-btn:hover {
-            background: linear-gradient(to right, #27ae60, #16a085);
+        .answers::-webkit-scrollbar-thumb {
+            background: #2ecc71;
+            border-radius: 8px;
         }
         
-        #reset-btn {
-            background: linear-gradient(to right, #e74c3c, #e67e22);
+        .answers::-webkit-scrollbar-thumb:hover {
+            background: #27ae60;
         }
         
-        #reset-btn:hover {
-            background: linear-gradient(to right, #c0392b, #d35400);
+        .answer-item {
+            background-color: white;
+            border: 2px solid #2ecc71;
+            border-radius: 8px;
+            padding: 14px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            font-size: 1rem;
+            line-height: 1.3;
+        }
+        
+        .answer-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .answer-number {
+            background-color: #2ecc71;
+            color: white;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 10px;
+            flex-shrink: 0;
+            font-size: 0.9rem;
+        }
+        
+        .answer-text {
+            display: inline;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+        
+        .answer-scrambled-words {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #f0fff4;
+            border-radius: 8px;
+            min-height: 50px;
+        }
+        
+        .answer-sentence-area {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .answer-sentence-label {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            font-weight: 500;
+        }
+        
+        .answer-drop-zone {
+            min-height: 60px;
+            border: 2px dashed #bdc3c7;
+            border-radius: 8px;
+            padding: 12px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            background-color: #fafbfc;
+            touch-action: none;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        
+        .answer-drop-zone.highlight {
+            background-color: #e1f5fe;
+            border-color: #4fc3f7;
+            transform: scale(1.02);
+        }
+        
+        .answer-drop-zone.correct {
+            background-color: #e8f5e9;
+            border-color: #66bb6a;
+            border-style: solid;
+        }
+        
+        .answer-drop-zone.incorrect {
+            background-color: #ffebee;
+            border-color: #ef5350;
+            border-style: solid;
+        }
+        
+        .answer-drop-zone-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            min-height: 40px;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            white-space: normal;
+            font-size: 1rem;
+            line-height: 1.3;
+            flex-wrap: wrap;
+            gap: 6px;
         }
         
         .feedback {
             margin-top: 20px;
-            padding: 15px;
-            border-radius: 8px;
+            padding: 12px;
+            border-radius: 10px;
             text-align: center;
             font-weight: bold;
+            font-size: 1.1rem;
             display: none;
         }
         
         .feedback.correct {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
+            background-color: #e8f5e9;
+            color: #2e7d32;
             display: block;
         }
         
         .feedback.incorrect {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
+            background-color: #ffebee;
+            color: #c62828;
             display: block;
         }
         
-        .hint {
-            font-size: 14px;
-            color: #6c757d;
-            margin-top: 5px;
-            text-align: center;
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
         }
         
-        @media (max-width: 600px) {
-            .dialog-text {
-                font-size: 14px;
-            }
-            
-            .audio-btn {
-                width: 35px;
-                height: 35px;
-                margin-right: 10px;
-            }
-            
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+            min-width: 140px;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        @media (max-width: 480px) {
             button {
-                padding: 10px 15px;
-                font-size: 14px;
+                min-width: 120px;
+                padding: 10px 20px;
+                font-size: 0.95rem;
+            }
+        }
+        
+        #check-btn {
+            background: linear-gradient(to right, #2ecc71, #1abc9c);
+            color: white;
+        }
+        
+        #check-btn:hover, #check-btn:active {
+            background: linear-gradient(to right, #27ae60, #16a085);
+            transform: translateY(-2px);
+        }
+        
+        #reset-btn {
+            background: linear-gradient(to right, #e74c3c, #e67e22);
+            color: white;
+        }
+        
+        #reset-btn:hover, #reset-btn:active {
+            background: linear-gradient(to right, #c0392b, #d35400);
+            transform: translateY(-2px);
+        }
+        
+        .audio-icon {
+            font-size: 1.2rem;
+        }
+        
+        .completion-message {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 1.1rem;
+            color: #2c3e50;
+            font-weight: bold;
+            display: none;
+            padding: 0 10px;
+        }
+        
+        .empty-message {
+            color: #7f8c8d;
+            font-style: italic;
+            font-size: 0.95rem;
+        }
+        
+        .scroll-hint {
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 0.85rem;
+            margin-top: 8px;
+            display: none;
+            padding: 0 10px;
+        }
+        
+        .mobile-tip {
+            display: none;
+            text-align: center;
+            color: #3498db;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            font-weight: 500;
+        }
+        
+        @media (max-width: 767px) {
+            .mobile-tip {
+                display: block;
+            }
+            
+            .questions, .answers {
+                max-height: 400px;
             }
             
             .container {
@@ -234,6 +527,10 @@
         }
         
         @media (max-width: 480px) {
+            .questions, .answers {
+                max-height: 350px;
+            }
+            
             body {
                 padding: 10px;
             }
@@ -253,18 +550,36 @@
             }
         }
         
+        @media (max-height: 700px) {
+            .questions, .answers {
+                max-height: 300px;
+            }
+        }
+        
+        @media (max-height: 600px) {
+            .questions, .answers {
+                max-height: 250px;
+            }
+        }
+        
         /* Touch device optimizations */
         @media (hover: none) and (pointer: coarse) {
-            .dialog-line:hover {
+            .word:hover {
+                transform: none;
+                background-color: #e3f2fd;
+            }
+            
+            .word:active {
+                background-color: #bbdefb;
+                transform: scale(0.98);
+            }
+            
+            .audio-player:hover {
                 transform: none;
             }
             
-            .audio-btn:hover {
-                background-color: #4a6fa5;
-            }
-            
-            .audio-btn:active {
-                background-color: #3a5a80;
+            .audio-player:active {
+                transform: scale(1.1);
             }
         }
     </style>
@@ -272,252 +587,721 @@
 <body>
     <div class="container">
         <header>
-            <h1>Restaurant Reservation Dialog</h1>
-            <p>Put the conversation in the correct order</p>
+            <h1>Sentence Builder - Unscramble Questions & Answers</h1>
+            <p>Rearrange the scrambled words to form correct questions and answers</p>
         </header>
         
         <div class="instructions">
-            <p><strong>Instructions:</strong></p>
-            <ul>
-                <li>Drag and drop the lines to arrange them in the correct order</li>
-                <li>Click the play button to listen to each line</li>
-                <li>When finished, click "Check Order" to verify your answer</li>
-                <li>Use "Reset" to start over</li>
-            </ul>
+            <p>🎯 Click on the scrambled words to build sentences. Each audio contains both the question and answer.</p>
+            <p class="scroll-hint" id="scroll-hint">💡 Scroll to see all questions and answers.</p>
+            <p class="mobile-tip">📱 On mobile: Tap words to build sentences. Tap words in the sentence area to return them.</p>
         </div>
         
-        <div class="dialog-container" id="dialogContainer">
-            <!-- Dialog lines will be inserted here by JavaScript -->
-        </div>
-        
-        <div class="controls">
-            <button id="check-btn">Check Order</button>
-            <button id="reset-btn">Reset</button>
+        <div class="game-area">
+            <div class="questions">
+                <div class="question" data-question="name">
+                    <div class="question-header">
+                        <div class="question-number">1</div>
+                        <div class="question-text">Unscramble the question:</div>
+                    </div>
+                    <div class="scrambled-words" id="name-question-words">
+                        <div class="word" data-word="is">is</div>
+                        <div class="word" data-word="name">name</div>
+                        <div class="word" data-word="What">What</div>
+                        <div class="word" data-word="your">your</div>
+                        <div class="word" data-word="?">?</div>
+                    </div>
+                    <div class="sentence-area">
+                        <div class="sentence-label">Build your question here:</div>
+                        <div class="drop-zone" data-answer="name-question" id="name-question-zone">
+                            <div class="drop-zone-content">
+                                <span class="empty-message">Click words above to build the question</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="audio-controls">
+                        <div class="audio-text">Listen to question and answer:</div>
+                        <div class="audio-player" data-audio="q31.mp3">
+                            <span class="audio-icon">▶</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="question" data-question="live">
+                    <div class="question-header">
+                        <div class="question-number">2</div>
+                        <div class="question-text">Unscramble the question:</div>
+                    </div>
+                    <div class="scrambled-words" id="live-question-words">
+                        <div class="word" data-word="you">you</div>
+                        <div class="word" data-word="do">do</div>
+                        <div class="word" data-word="live">live</div>
+                        <div class="word" data-word="Where">Where</div>
+                        <div class="word" data-word="?">?</div>
+                    </div>
+                    <div class="sentence-area">
+                        <div class="sentence-label">Build your question here:</div>
+                        <div class="drop-zone" data-answer="live-question" id="live-question-zone">
+                            <div class="drop-zone-content">
+                                <span class="empty-message">Click words above to build the question</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="audio-controls">
+                        <div class="audio-text">Listen to question and answer:</div>
+                        <div class="audio-player" data-audio="q32.mp3">
+                            <span class="audio-icon">▶</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="question" data-question="age">
+                    <div class="question-header">
+                        <div class="question-number">3</div>
+                        <div class="question-text">Unscramble the question:</div>
+                    </div>
+                    <div class="scrambled-words" id="age-question-words">
+                        <div class="word" data-word="old">old</div>
+                        <div class="word" data-word="are">are</div>
+                        <div class="word" data-word="How">How</div>
+                        <div class="word" data-word="you">you</div>
+                        <div class="word" data-word="?">?</div>
+                    </div>
+                    <div class="sentence-area">
+                        <div class="sentence-label">Build your question here:</div>
+                        <div class="drop-zone" data-answer="age-question" id="age-question-zone">
+                            <div class="drop-zone-content">
+                                <span class="empty-message">Click words above to build the question</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="audio-controls">
+                        <div class="audio-text">Listen to question and answer:</div>
+                        <div class="audio-player" data-audio="q33.mp3">
+                            <span class="audio-icon">▶</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="question" data-question="going">
+                    <div class="question-header">
+                        <div class="question-number">4</div>
+                        <div class="question-text">Unscramble the question:</div>
+                    </div>
+                    <div class="scrambled-words" id="going-question-words">
+                        <div class="word" data-word="are">are</div>
+                        <div class="word" data-word="Where">Where</div>
+                        <div class="word" data-word="going">going</div>
+                        <div class="word" data-word="you">you</div>
+                        <div class="word" data-word="?">?</div>
+                    </div>
+                    <div class="sentence-area">
+                        <div class="sentence-label">Build your question here:</div>
+                        <div class="drop-zone" data-answer="going-question" id="going-question-zone">
+                            <div class="drop-zone-content">
+                                <span class="empty-message">Click words above to build the question</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="audio-controls">
+                        <div class="audio-text">Listen to question and answer:</div>
+                        <div class="audio-player" data-audio="q34.mp3">
+                            <span class="audio-icon">▶</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="question" data-question="time">
+                    <div class="question-header">
+                        <div class="question-number">5</div>
+                        <div class="question-text">Unscramble the question:</div>
+                    </div>
+                    <div class="scrambled-words" id="time-question-words">
+                        <div class="word" data-word="is">is</div>
+                        <div class="word" data-word="time">time</div>
+                        <div class="word" data-word="it">it</div>
+                        <div class="word" data-word="What">What</div>
+                        <div class="word" data-word="?">?</div>
+                    </div>
+                    <div class="sentence-area">
+                        <div class="sentence-label">Build your question here:</div>
+                        <div class="drop-zone" data-answer="time-question" id="time-question-zone">
+                            <div class="drop-zone-content">
+                                <span class="empty-message">Click words above to build the question</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="audio-controls">
+                        <div class="audio-text">Listen to question and answer:</div>
+                        <div class="audio-player" data-audio="q35.mp3">
+                            <span class="audio-icon">▶</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="answers">
+                <div class="answer-item" data-answer="name">
+                    <div class="answer-header">
+                        <div class="answer-number">A</div>
+                        <div class="answer-text">Unscramble the answer:</div>
+                    </div>
+                    <div class="answer-scrambled-words" id="name-answer-words">
+                        <div class="word" data-word="name">name</div>
+                        <div class="word" data-word="Sarah">Sarah</div>
+                        <div class="word" data-word="is">is</div>
+                        <div class="word" data-word="My">My</div>
+                        <div class="word" data-word=".">.</div>
+                    </div>
+                    <div class="answer-sentence-area">
+                        <div class="answer-sentence-label">Build your answer here:</div>
+                        <div class="answer-drop-zone" data-answer="name-answer" id="name-answer-zone">
+                            <div class="answer-drop-zone-content">
+                                <span class="empty-message">Click words above to build the answer</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="answer-item" data-answer="live">
+                    <div class="answer-header">
+                        <div class="answer-number">B</div>
+                        <div class="answer-text">Unscramble the answer:</div>
+                    </div>
+                    <div class="answer-scrambled-words" id="live-answer-words">
+                        <div class="word" data-word="near">near</div>
+                        <div class="word" data-word="the">the</div>
+                        <div class="word" data-word="live">live</div>
+                        <div class="word" data-word="I">I</div>
+                        <div class="word" data-word="park">park</div>
+                        <div class="word" data-word=".">.</div>
+                    </div>
+                    <div class="answer-sentence-area">
+                        <div class="answer-sentence-label">Build your answer here:</div>
+                        <div class="answer-drop-zone" data-answer="live-answer" id="live-answer-zone">
+                            <div class="answer-drop-zone-content">
+                                <span class="empty-message">Click words above to build the answer</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="answer-item" data-answer="age">
+                    <div class="answer-header">
+                        <div class="answer-number">C</div>
+                        <div class="answer-text">Unscramble the answer:</div>
+                    </div>
+                    <div class="answer-scrambled-words" id="age-answer-words">
+                        <div class="word" data-word="seven">seven</div>
+                        <div class="word" data-word="old">old</div>
+                        <div class="word" data-word="am">am</div>
+                        <div class="word" data-word="I">I</div>
+                        <div class="word" data-word="years">years</div>
+                        <div class="word" data-word=".">.</div>
+                    </div>
+                    <div class="answer-sentence-area">
+                        <div class="answer-sentence-label">Build your answer here:</div>
+                        <div class="answer-drop-zone" data-answer="age-answer" id="age-answer-zone">
+                            <div class="answer-drop-zone-content">
+                                <span class="empty-message">Click words above to build the answer</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="answer-item" data-answer="going">
+                    <div class="answer-header">
+                        <div class="answer-number">D</div>
+                        <div class="answer-text">Unscramble the answer:</div>
+                    </div>
+                    <div class="answer-scrambled-words" id="going-answer-words">
+                        <div class="word" data-word="school">school</div>
+                        <div class="word" data-word="to">to</div>
+                        <div class="word" data-word="going">going</div>
+                        <div class="word" data-word="am">am</div>
+                        <div class="word" data-word="I">I</div>
+                        <div class="word" data-word="my">my</div>
+                        <div class="word" data-word=".">.</div>
+                    </div>
+                    <div class="answer-sentence-area">
+                        <div class="answer-sentence-label">Build your answer here:</div>
+                        <div class="answer-drop-zone" data-answer="going-answer" id="going-answer-zone">
+                            <div class="answer-drop-zone-content">
+                                <span class="empty-message">Click words above to build the answer</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="answer-item" data-answer="time">
+                    <div class="answer-header">
+                        <div class="answer-number">E</div>
+                        <div class="answer-text">Unscramble the answer:</div>
+                    </div>
+                    <div class="answer-scrambled-words" id="time-answer-words">
+                        <div class="word" data-word="o'clock">o'clock</div>
+                        <div class="word" data-word="is">is</div>
+                        <div class="word" data-word="It">It</div>
+                        <div class="word" data-word="eight">eight</div>
+                        <div class="word" data-word=".">.</div>
+                    </div>
+                    <div class="answer-sentence-area">
+                        <div class="answer-sentence-label">Build your answer here:</div>
+                        <div class="answer-drop-zone" data-answer="time-answer" id="time-answer-zone">
+                            <div class="answer-drop-zone-content">
+                                <span class="empty-message">Click words above to build the answer</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         
         <div class="feedback" id="feedback"></div>
-        <div class="hint" id="hint">Hint: The conversation starts with the receptionist answering the phone</div>
+        
+        <div class="completion-message" id="completion-message">
+            Great job! You've successfully built all the questions and answers!
+        </div>
+        
+        <div class="controls">
+            <button id="check-btn">Check Answers</button>
+            <button id="reset-btn">Reset Game</button>
+        </div>
     </div>
 
     <script>
-        // Dialog data - each line with text and audio file name
-        const dialogLines = [
-            { text: "Luigi's. Can I help you?", audio: "S1.mp3" },
-            { text: "Yes, I'd like to make a reservation, please.", audio: "S2.mp3" },
-            { text: "Of course. What day?", audio: "S3.mp3" },
-            { text: "Friday, August 15.", audio: "S4.mp3" },
-            { text: "Is that for lunch or dinner?", audio: "S5.mp3" },
-            { text: "Dinner.", audio: "S6.mp3" },
-            { text: "I'm sorry. We have tables for lunch, but there aren't any tables for dinner on the 15th. There's a big party that night.", audio: "S7.mp3" },
-            { text: "Oh. It's my birthday.", audio: "S8.mp3" },
-            { text: "Would you like a different day?", audio: "S9.mp3" },
-            { text: "What about Saturday – Saturday, August 16th?", audio: "S10.mp3" },
-            { text: "For dinner?", audio: "S11.mp3" },
-            { text: "Yes.", audio: "S12.mp3" },
-            { text: "Yes. We have some tables for dinner on Saturday.", audio: "S13.mp3" },
-            { text: "Great.", audio: "S14.mp3" },
-            { text: "How many people?", audio: "S15.mp3" },
-            { text: "Six. Do you have a window table?", audio: "S16.mp3" },
-            { text: "Excuse me?", audio: "S17.mp3" },
-            { text: "Do you have a table near the window with a view of the park?", audio: "S18.mp3" },
-            { text: "Certainly. What time would you like, seven thirty or nine o'clock?", audio: "S19.mp3" },
-            { text: "Er, nine, I think.", audio: "S20.mp3" },
-            { text: "And what's your name?", audio: "S21.mp3" },
-            { text: "Lara Gluck.", audio: "S22.mp3" },
-            { text: "Can you spell that, please?", audio: "S23.mp3" },
-            { text: "L-A-R-A G-L-U-C-K.", audio: "S24.mp3" },
-            { text: "OK. That's a window table for six people at 9:00 p.m. on Saturday, August 16th.", audio: "S25.mp3" },
-            { text: "Thanks. Is there a dress code?", audio: "S26.mp3" },
-            { text: "Yes. No jeans, and we ask men to wear a jacket.", audio: "S27.mp3" },
-            { text: "OK. Oh, and can I pay by credit card?", audio: "S28.mp3" },
-            { text: "Yes, that's no problem. See you Saturday.", audio: "S29.mp3" }
-        ];
-
-        // Store audio elements
-        const audioElements = {};
-        let currentlyPlaying = null;
-
-        // Shuffle the dialog lines for the exercise
-        function shuffleArray(array) {
-            const shuffled = [...array];
-            for (let i = shuffled.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-            }
-            return shuffled;
-        }
-
-        // Initialize the exercise
-        function initializeExercise() {
-            const dialogContainer = document.getElementById('dialogContainer');
-            dialogContainer.innerHTML = '';
+        document.addEventListener('DOMContentLoaded', function() {
+            const checkBtn = document.getElementById('check-btn');
+            const resetBtn = document.getElementById('reset-btn');
+            const feedback = document.getElementById('feedback');
+            const completionMessage = document.getElementById('completion-message');
+            const audioPlayers = document.querySelectorAll('.audio-player');
+            const scrollHint = document.getElementById('scroll-hint');
             
-            const shuffledLines = shuffleArray(dialogLines);
+            let completedMatches = 0;
+            const totalMatches = 5;
             
-            shuffledLines.forEach((line, index) => {
-                const dialogLine = document.createElement('div');
-                dialogLine.className = 'dialog-line';
-                dialogLine.draggable = true;
-                dialogLine.dataset.index = index;
-                dialogLine.dataset.originalIndex = dialogLines.indexOf(line);
+            // Store correct answer mappings - FIXED VERSION
+            const correctQuestions = {
+                'name-question': 'What is your name?',
+                'live-question': 'Where do you live?', 
+                'age-question': 'How old are you?',
+                'going-question': 'Where are you going?',
+                'time-question': 'What time is it?'
+            };
+            
+            const correctAnswers = {
+                'name-answer': 'My name is Sarah.',
+                'live-answer': 'I live near the park.', 
+                'age-answer': 'I am seven years old.',
+                'going-answer': 'I am going to my school.',
+                'time-answer': 'It is eight o\'clock.'
+            };
+            
+            // Show scroll hint on first interaction
+            setTimeout(() => {
+                scrollHint.style.display = 'block';
+                setTimeout(() => {
+                    scrollHint.style.display = 'none';
+                }, 5000);
+            }, 2000);
+            
+            // Create audio elements for each question/answer pair
+            const audioElements = {};
+            const audioFiles = ['q31.mp3', 'q32.mp3', 'q33.mp3', 'q34.mp3', 'q35.mp3'];
+            
+            // Load audio files
+            audioFiles.forEach(file => {
+                const audio = new Audio(file);
+                audioElements[file] = audio;
                 
-                const audioBtn = document.createElement('button');
-                audioBtn.className = 'audio-btn';
-                audioBtn.innerHTML = '▶';
-                audioBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    playAudio(line.audio, audioBtn);
+                audio.addEventListener('error', function() {
+                    console.error(`Error loading audio file: ${file}`);
                 });
                 
-                const dialogText = document.createElement('div');
-                dialogText.className = 'dialog-text';
-                dialogText.textContent = line.text;
-                
-                dialogLine.appendChild(audioBtn);
-                dialogLine.appendChild(dialogText);
-                dialogContainer.appendChild(dialogLine);
+                audio.addEventListener('ended', function() {
+                    // Reset play button when audio ends
+                    audioPlayers.forEach(player => {
+                        if (player.getAttribute('data-audio') === this.src.split('/').pop()) {
+                            player.innerHTML = '▶';
+                        }
+                    });
+                });
             });
             
-            // Add drag and drop event listeners
-            setupDragAndDrop();
+            // Initialize word functionality for all word pools
+            initializeWordFunctionality();
             
-            // Reset feedback
-            document.getElementById('feedback').style.display = 'none';
-        }
-
-        // Set up drag and drop functionality
-        function setupDragAndDrop() {
-            const dialogLines = document.querySelectorAll('.dialog-line');
-            let draggedItem = null;
-            
-            dialogLines.forEach(line => {
-                line.addEventListener('dragstart', function() {
-                    draggedItem = this;
-                    setTimeout(() => this.classList.add('dragging'), 0);
-                });
+            function initializeWordFunctionality() {
+                // Get all word elements
+                const words = document.querySelectorAll('.word');
                 
-                line.addEventListener('dragend', function() {
-                    this.classList.remove('dragging');
-                    draggedItem = null;
-                });
-                
-                line.addEventListener('dragover', function(e) {
-                    e.preventDefault();
-                });
-                
-                line.addEventListener('dragenter', function(e) {
-                    e.preventDefault();
-                    this.classList.add('dragging-over');
-                });
-                
-                line.addEventListener('dragleave', function() {
-                    this.classList.remove('dragging-over');
-                });
-                
-                line.addEventListener('drop', function(e) {
-                    e.preventDefault();
-                    this.classList.remove('dragging-over');
-                    
-                    if (draggedItem && this !== draggedItem) {
-                        const dialogContainer = document.getElementById('dialogContainer');
-                        const allLines = Array.from(dialogContainer.querySelectorAll('.dialog-line'));
-                        const draggedIndex = allLines.indexOf(draggedItem);
-                        const targetIndex = allLines.indexOf(this);
-                        
-                        if (draggedIndex < targetIndex) {
-                            dialogContainer.insertBefore(draggedItem, this.nextSibling);
-                        } else {
-                            dialogContainer.insertBefore(draggedItem, this);
-                        }
+                words.forEach(word => {
+                    // Only add event listeners to words in scrambled areas (not in drop zones)
+                    if (!word.classList.contains('selected')) {
+                        word.addEventListener('click', function() {
+                            const wordText = this.textContent;
+                            const wordData = this.getAttribute('data-word');
+                            
+                            // Find the corresponding drop zone
+                            let dropZone, dropZoneContent;
+                            let wordPool;
+                            
+                            // Check if this is a question word or answer word
+                            const question = this.closest('.question');
+                            const answerItem = this.closest('.answer-item');
+                            
+                            if (question) {
+                                const questionId = question.getAttribute('data-question');
+                                dropZone = document.getElementById(`${questionId}-question-zone`);
+                                dropZoneContent = dropZone.querySelector('.drop-zone-content');
+                                wordPool = document.getElementById(`${questionId}-question-words`);
+                            } else if (answerItem) {
+                                const answerId = answerItem.getAttribute('data-answer');
+                                dropZone = document.getElementById(`${answerId}-answer-zone`);
+                                dropZoneContent = dropZone.querySelector('.answer-drop-zone-content');
+                                wordPool = document.getElementById(`${answerId}-answer-words`);
+                            } else {
+                                return;
+                            }
+                            
+                            // Remove empty message if present
+                            const emptyMessage = dropZoneContent.querySelector('.empty-message');
+                            if (emptyMessage) {
+                                emptyMessage.remove();
+                            }
+                            
+                            // Add the word to the drop zone
+                            const wordElement = document.createElement('span');
+                            wordElement.className = 'word selected';
+                            wordElement.textContent = wordText;
+                            wordElement.setAttribute('data-word', wordData);
+                            wordElement.setAttribute('data-origin', wordPool.id);
+                            
+                            // Add click event to return the word
+                            wordElement.addEventListener('click', function() {
+                                returnWordToPool(this);
+                            });
+                            
+                            dropZoneContent.appendChild(wordElement);
+                            
+                            // Remove the word from the scrambled words list
+                            this.remove();
+                        });
                     }
                 });
+                
+                // Also initialize words that are already in drop zones (after reset)
+                const selectedWords = document.querySelectorAll('.word.selected');
+                selectedWords.forEach(word => {
+                    word.addEventListener('click', function() {
+                        returnWordToPool(this);
+                    });
+                });
+            }
+            
+            function returnWordToPool(wordElement) {
+                const originPoolId = wordElement.getAttribute('data-origin');
+                const wordPool = document.getElementById(originPoolId);
+                const wordText = wordElement.textContent;
+                const wordData = wordElement.getAttribute('data-word');
+                
+                // Create a new word element for the pool
+                const newWord = document.createElement('div');
+                newWord.className = 'word';
+                newWord.setAttribute('data-word', wordData);
+                newWord.textContent = wordText;
+                
+                // Add click event to the new word
+                newWord.addEventListener('click', function() {
+                    const wordText = this.textContent;
+                    const wordData = this.getAttribute('data-word');
+                    
+                    // Find the corresponding drop zone
+                    let dropZone, dropZoneContent;
+                    
+                    // Check if this is a question word or answer word
+                    const question = this.closest('.question');
+                    const answerItem = this.closest('.answer-item');
+                    
+                    if (question) {
+                        const questionId = question.getAttribute('data-question');
+                        dropZone = document.getElementById(`${questionId}-question-zone`);
+                        dropZoneContent = dropZone.querySelector('.drop-zone-content');
+                    } else if (answerItem) {
+                        const answerId = answerItem.getAttribute('data-answer');
+                        dropZone = document.getElementById(`${answerId}-answer-zone`);
+                        dropZoneContent = dropZone.querySelector('.answer-drop-zone-content');
+                    } else {
+                        return;
+                    }
+                    
+                    // Remove empty message if present
+                    const emptyMessage = dropZoneContent.querySelector('.empty-message');
+                    if (emptyMessage) {
+                        emptyMessage.remove();
+                    }
+                    
+                    // Add the word to the drop zone
+                    const wordElement = document.createElement('span');
+                    wordElement.className = 'word selected';
+                    wordElement.textContent = wordText;
+                    wordElement.setAttribute('data-word', wordData);
+                    wordElement.setAttribute('data-origin', originPoolId);
+                    
+                    // Add click event to return the word
+                    wordElement.addEventListener('click', function() {
+                        returnWordToPool(this);
+                    });
+                    
+                    dropZoneContent.appendChild(wordElement);
+                    
+                    // Remove the word from the scrambled words list
+                    this.remove();
+                });
+                
+                // Add the word back to the pool
+                wordPool.appendChild(newWord);
+                
+                // Remove the word from the drop zone
+                wordElement.remove();
+                
+                // If drop zone is empty, show empty message
+                const dropZoneContent = wordElement.parentElement;
+                if (dropZoneContent.children.length === 0) {
+                    const emptyMsg = document.createElement('span');
+                    emptyMsg.className = 'empty-message';
+                    if (originPoolId.includes('question')) {
+                        emptyMsg.textContent = 'Click words above to build the question';
+                    } else {
+                        emptyMsg.textContent = 'Click words above to build the answer';
+                    }
+                    dropZoneContent.appendChild(emptyMsg);
+                }
+            }
+            
+            // Audio player functionality
+            audioPlayers.forEach(player => {
+                player.addEventListener('click', function() {
+                    const audioFile = this.getAttribute('data-audio');
+                    const audio = audioElements[audioFile];
+                    
+                    if (!audio) {
+                        console.error(`Audio element not found for: ${audioFile}`);
+                        return;
+                    }
+                    
+                    if (audio.paused) {
+                        // Pause all other audios
+                        Object.values(audioElements).forEach(a => {
+                            if (a !== audio && !a.paused) {
+                                a.pause();
+                                // Reset all play buttons
+                                audioPlayers.forEach(p => {
+                                    if (p.getAttribute('data-audio') !== audioFile) {
+                                        p.innerHTML = '▶';
+                                    }
+                                });
+                            }
+                        });
+                        
+                        audio.play().then(() => {
+                            this.innerHTML = '⏸';
+                        }).catch(error => {
+                            console.error(`Error playing audio: ${error}`);
+                        });
+                    } else {
+                        audio.pause();
+                        this.innerHTML = '▶';
+                    }
+                });
+                
+                // Touch events for audio players
+                player.addEventListener('touchend', function(e) {
+                    e.preventDefault();
+                    this.click();
+                });
             });
-        }
-
-        // Audio playback function
-        function playAudio(audioFile, button) {
-            // Stop currently playing audio if any
-            if (currentlyPlaying) {
-                currentlyPlaying.pause();
-                currentlyPlaying.currentTime = 0;
+            
+            // Check answers - FIXED VERSION
+            checkBtn.addEventListener('click', function() {
+                let allCorrect = true;
+                completedMatches = 0;
+                
+                // Check questions
+                const questionDropZones = document.querySelectorAll('.drop-zone');
+                questionDropZones.forEach(zone => {
+                    const zoneType = zone.getAttribute('data-answer');
+                    const builtSentence = zone.querySelector('.drop-zone-content');
+                    
+                    if (builtSentence && builtSentence.querySelector('.word')) {
+                        // Get the text content of the built sentence
+                        const words = Array.from(builtSentence.querySelectorAll('.word'));
+                        const builtText = words.map(word => word.textContent).join(' ').trim();
+                        
+                        // Normalize the built text and correct answer for comparison
+                        const normalizedBuilt = builtText.replace(/\s+/g, ' ').trim();
+                        const normalizedCorrect = correctQuestions[zoneType].replace(/\s+/g, ' ').trim();
+                        
+                        console.log(`Question ${zoneType}:`, {
+                            built: normalizedBuilt,
+                            correct: normalizedCorrect,
+                            match: normalizedBuilt === normalizedCorrect
+                        });
+                        
+                        if (normalizedBuilt === normalizedCorrect) {
+                            zone.classList.add('correct');
+                            zone.classList.remove('incorrect');
+                            completedMatches++;
+                        } else {
+                            zone.classList.add('incorrect');
+                            zone.classList.remove('correct');
+                            allCorrect = false;
+                        }
+                    } else {
+                        allCorrect = false;
+                        zone.classList.add('incorrect');
+                    }
+                });
+                
+                // Check answers
+                const answerDropZones = document.querySelectorAll('.answer-drop-zone');
+                answerDropZones.forEach(zone => {
+                    const zoneType = zone.getAttribute('data-answer');
+                    const builtSentence = zone.querySelector('.answer-drop-zone-content');
+                    
+                    if (builtSentence && builtSentence.querySelector('.word')) {
+                        // Get the text content of the built sentence
+                        const words = Array.from(builtSentence.querySelectorAll('.word'));
+                        const builtText = words.map(word => word.textContent).join(' ').trim();
+                        
+                        // Normalize the built text and correct answer for comparison
+                        const normalizedBuilt = builtText.replace(/\s+/g, ' ').trim();
+                        const normalizedCorrect = correctAnswers[zoneType].replace(/\s+/g, ' ').trim();
+                        
+                        console.log(`Answer ${zoneType}:`, {
+                            built: normalizedBuilt,
+                            correct: normalizedCorrect,
+                            match: normalizedBuilt === normalizedCorrect
+                        });
+                        
+                        if (normalizedBuilt === normalizedCorrect) {
+                            zone.classList.add('correct');
+                            zone.classList.remove('incorrect');
+                            completedMatches++;
+                        } else {
+                            zone.classList.add('incorrect');
+                            zone.classList.remove('correct');
+                            allCorrect = false;
+                        }
+                    } else {
+                        allCorrect = false;
+                        zone.classList.add('incorrect');
+                    }
+                });
+                
+                if (allCorrect) {
+                    feedback.textContent = '🎉 Excellent! All questions and answers are correct! 🎉';
+                    feedback.className = 'feedback correct';
+                } else {
+                    feedback.textContent = `${completedMatches} out of ${totalMatches * 2} sentences are correct. Try again!`;
+                    feedback.className = 'feedback incorrect';
+                }
+            });
+            
+            // Reset functionality
+            resetBtn.addEventListener('click', function() {
+                // Pause all audio
+                Object.values(audioElements).forEach(audio => {
+                    audio.pause();
+                });
+                
                 // Reset all play buttons
-                document.querySelectorAll('.audio-btn').forEach(btn => {
-                    btn.innerHTML = '▶';
-                    btn.classList.remove('playing');
-                });
-            }
-            
-            // Create audio element if it doesn't exist
-            if (!audioElements[audioFile]) {
-                audioElements[audioFile] = new Audio(audioFile);
-                
-                audioElements[audioFile].addEventListener('ended', function() {
-                    button.innerHTML = '▶';
-                    button.classList.remove('playing');
-                    currentlyPlaying = null;
+                audioPlayers.forEach(player => {
+                    player.innerHTML = '▶';
                 });
                 
-                audioElements[audioFile].addEventListener('error', function() {
-                    console.error(`Error loading audio file: ${audioFile}`);
-                    button.innerHTML = '▶';
-                    button.classList.remove('playing');
-                    currentlyPlaying = null;
-                    alert(`Error loading audio file: ${audioFile}. Please check if the file exists.`);
-                });
-            }
-            
-            // Play the audio
-            audioElements[audioFile].play().then(() => {
-                button.innerHTML = '⏸';
-                button.classList.add('playing');
-                currentlyPlaying = audioElements[audioFile];
-            }).catch(error => {
-                console.error(`Error playing audio: ${error}`);
-                button.innerHTML = '▶';
-                button.classList.remove('playing');
+                // Clear all drop zones and reset word pools
+                resetGame();
+                
+                // Hide feedback and completion message
+                feedback.style.display = 'none';
+                completionMessage.style.display = 'none';
+                completedMatches = 0;
+                
+                // Scroll to top for better UX
+                window.scrollTo(0, 0);
             });
-        }
-
-        // Check if the order is correct
-        function checkOrder() {
-            const dialogContainer = document.getElementById('dialogContainer');
-            const currentOrder = Array.from(dialogContainer.querySelectorAll('.dialog-line'))
-                .map(line => parseInt(line.dataset.originalIndex));
             
-            const correctOrder = Array.from({length: dialogLines.length}, (_, i) => i);
-            
-            const isCorrect = JSON.stringify(currentOrder) === JSON.stringify(correctOrder);
-            const feedback = document.getElementById('feedback');
-            
-            if (isCorrect) {
-                feedback.textContent = "Correct! You've arranged the conversation in the right order.";
-                feedback.className = 'feedback correct';
-            } else {
-                feedback.textContent = "Not quite right. Try again or listen to the audio for clues.";
-                feedback.className = 'feedback incorrect';
-            }
-            
-            feedback.style.display = 'block';
-        }
-
-        // Event listeners for buttons
-        document.getElementById('check-btn').addEventListener('click', checkOrder);
-        document.getElementById('reset-btn').addEventListener('click', function() {
-            // Stop any currently playing audio
-            if (currentlyPlaying) {
-                currentlyPlaying.pause();
-                currentlyPlaying.currentTime = 0;
-                document.querySelectorAll('.audio-btn').forEach(btn => {
-                    btn.innerHTML = '▶';
-                    btn.classList.remove('playing');
+            function resetGame() {
+                // Reset questions
+                const questions = [
+                    { id: 'name', words: ['is', 'name', 'What', 'your', '?'] },
+                    { id: 'live', words: ['you', 'do', 'live', 'Where', '?'] },
+                    { id: 'age', words: ['old', 'are', 'How', 'you', '?'] },
+                    { id: 'going', words: ['are', 'Where', 'going', 'you', '?'] },
+                    { id: 'time', words: ['is', 'time', 'it', 'What', '?'] }
+                ];
+                
+                questions.forEach(q => {
+                    // Clear drop zone
+                    const dropZone = document.getElementById(`${q.id}-question-zone`);
+                    const dropZoneContent = dropZone.querySelector('.drop-zone-content');
+                    dropZoneContent.innerHTML = '<span class="empty-message">Click words above to build the question</span>';
+                    dropZone.classList.remove('correct', 'incorrect', 'highlight');
+                    
+                    // Reset word pool
+                    const wordPool = document.getElementById(`${q.id}-question-words`);
+                    wordPool.innerHTML = '';
+                    
+                    q.words.forEach(word => {
+                        const wordElement = document.createElement('div');
+                        wordElement.className = 'word';
+                        wordElement.setAttribute('data-word', word);
+                        wordElement.textContent = word;
+                        wordPool.appendChild(wordElement);
+                    });
                 });
-                currentlyPlaying = null;
+                
+                // Reset answers
+                const answers = [
+                    { id: 'name', words: ['name', 'Sarah', 'is', 'My', '.'] },
+                    { id: 'live', words: ['near', 'the', 'live', 'I', 'park', '.'] },
+                    { id: 'age', words: ['seven', 'old', 'am', 'I', 'years', '.'] },
+                    { id: 'going', words: ['school', 'to', 'going', 'am', 'I', 'my', '.'] },
+                    { id: 'time', words: ['o\'clock', 'is', 'It', 'eight', '.'] }
+                ];
+                
+                answers.forEach(a => {
+                    // Clear drop zone
+                    const dropZone = document.getElementById(`${a.id}-answer-zone`);
+                    const dropZoneContent = dropZone.querySelector('.answer-drop-zone-content');
+                    dropZoneContent.innerHTML = '<span class="empty-message">Click words above to build the answer</span>';
+                    dropZone.classList.remove('correct', 'incorrect', 'highlight');
+                    
+                    // Reset word pool
+                    const wordPool = document.getElementById(`${a.id}-answer-words`);
+                    wordPool.innerHTML = '';
+                    
+                    a.words.forEach(word => {
+                        const wordElement = document.createElement('div');
+                        wordElement.className = 'word';
+                        wordElement.setAttribute('data-word', word);
+                        wordElement.textContent = word;
+                        wordPool.appendChild(wordElement);
+                    });
+                });
+                
+                // Reinitialize word functionality
+                initializeWordFunctionality();
             }
-            initializeExercise();
+            
+            // Prevent context menu on long press for better mobile experience
+            document.addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+                return false;
+            });
         });
-
-        // Initialize the exercise when the page loads
-        window.addEventListener('DOMContentLoaded', initializeExercise);
     </script>
 </body>
 </html>
