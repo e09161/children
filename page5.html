@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trace, Type, and Listen!</title>
+    <style>
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background-color: #f0f8ff;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #ff6b88;
+            margin-bottom: 20px;
+        }
+        
+        .word-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 2px dashed #a0d2ff;
+            border-radius: 10px;
+            background: #f8fdff;
+        }
+        
+        .tracing-container {
+            margin: 15px 0;
+            padding: 10px;
+            background: #fff;
+            border-radius: 8px;
+        }
+        
+        .tracing-area-wrapper {
+            position: relative;
+            height: 150px;
+            width: 100%;
+            margin: 10px auto;
+            background: #f9f9f9;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .trace-guide {
+            position: absolute;
+            font-size: 60px;
+            font-weight: bold;
+            color: rgba(0, 0, 0, 0.15);
+            pointer-events: none;
+            user-select: none;
+            font-family: 'Comic Sans MS', cursive;
+            z-index: 1;
+        }
+        
+        .drawing-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            cursor: crosshair;
+        }
+        
+        .typing-area {
+            margin: 15px 0;
+        }
+        
+        .typing-input {
+            font-size: 18px;
+            padding: 10px;
+            border: 2px solid #a0d2ff;
+            border-radius: 8px;
+            width: 200px;
+            text-align: center;
+            font-family: 'Comic Sans MS', cursive;
+        }
+        
+        .play-btn {
+            background-color: #5fa8ff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px 5px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+        
+        .play-btn:hover {
+            background-color: #4a90e2;
+            transform: scale(1.05);
+        }
+        
+        .check-btn {
+            background-color: #7ed321;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        
+        .clear-btn {
+            background-color: #ffa502;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        
+        .trace-check-btn {
+            background-color: #9b59b6;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        
+        .feedback {
+            font-size: 16px;
+            font-weight: bold;
+            margin: 10px 0;
+            min-height: 20px;
+        }
+        
+        .correct {
+            color: #7ed321;
+        }
+        
+        .incorrect {
+            color: #ff4757;
+        }
+        
+        .section-title {
+            color: #5fa8ff;
+            font-size: 20px;
+            margin: 20px 0 15px 0;
+            font-weight: bold;
+        }
+        
+        .instructions {
+            color: #666;
+            font-size: 14px;
+            margin: 10px 0;
+        }
+        
+        .button-group {
+            margin: 10px 0;
+        }
+        
+        .tracing-stats {
+            font-size: 14px;
+            color: #666;
+            margin: 5px 0;
+        }
+        
+        .play-all-btn {
+            background-color: #ff9eb5;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px 5px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌟 Trace, Type, and Listen! 🌟</h1>
+        
+        <div class="instructions">Trace the letters with your mouse, then type the word!</div>
+        
+        <div class="section-title">Where is it?</div>
+        
+        <div id="word-sections"></div>
+        
+        <button class="play-all-btn" onclick="playAllWords()">▶️ Play All Words</button>
+    </div>
+
+    <script>
+        const words = [
+            { word: "in", audio: "W1.mp3" },
+            { word: "next to", audio: "W2.mp3" },
+            { word: "on", audio: "W3.mp3" },
+            { word: "under", audio: "W4.mp3" },
+            { word: "mother", audio: "W5.mp3" },
+            { word: "brother", audio: "W6.mp3" },
+            { word: "sister", audio: "W7.mp3" },
+            { word: "dad", audio: "W8.mp3" },
+            { word: "father", audio: "W9.mp3" },
+            { word: "bush", audio: "W10.mp3" },
+            { word: "balloon", audio: "W11.mp3" }
+        ];
+
+        function createTracingArea(word, index) {
+            const container = document.createElement('div');
+            container.className = 'tracing-container';
+            
+            const wrapper = document.createElement('div');
+            wrapper.className = 'tracing-area-wrapper';
+            wrapper.id = `wrapper-${index}`;
+            
+            // Create canvas for drawing
+            const canvas = document.createElement('canvas');
+            canvas.className = 'drawing-canvas';
+            canvas.id = `canvas-${index}`;
+            
+            // Set canvas size immediately
+            const setCanvasSize = () => {
+                const rect = wrapper.getBoundingClientRect();
+                canvas.width = rect.width;
+                canvas.height = rect.height;
+                positionLetters(word, wrapper, canvas.width);
+            };
+            
+            // Initialize canvas size
+            setTimeout(setCanvasSize, 50);
+            
+            const ctx = canvas.getContext('2d');
+            ctx.strokeStyle = '#0066ff';
+            ctx.lineWidth = 8;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            
+            let letterPositions = [];
+            let isDrawing = false;
+            
+            function positionLetters(word, wrapper, containerWidth) {
+                // Clear existing letters
+                const existingLetters = wrapper.querySelectorAll('.trace-guide');
+                existingLetters.forEach(letter => letter.remove());
+                letterPositions = [];
+                
+                const letters = word.split('');
+                const letterWidth = 50;
+                const letterHeight = 60;
+                const letterSpacing = 15;
+                const spaceWidth = 25;
+                
+                // Calculate total width needed
+                let totalWidth = 0;
+                let letterCount = 0;
+                
+                letters.forEach(letter => {
+                    if (letter === ' ') {
+                        totalWidth += spaceWidth;
+                    } else {
+                        totalWidth += letterWidth + letterSpacing;
+                        letterCount++;
+                    }
+                });
+                
+                if (letterCount > 0) {
+                    totalWidth -= letterSpacing; // Remove last spacing
+                }
+                
+                // Ensure it fits within container
+                const maxWidth = containerWidth - 40;
+                let scale = 1;
+                if (totalWidth > maxWidth) {
+                    scale = maxWidth / totalWidth;
+                }
+                
+                const scaledLetterWidth = letterWidth * scale;
+                const scaledLetterHeight = letterHeight * scale;
+                const scaledLetterSpacing = letterSpacing * scale;
+                const scaledSpaceWidth = spaceWidth * scale;
+                const scaledTotalWidth = totalWidth * scale;
+                
+                const startX = (containerWidth - scaledTotalWidth) / 2;
+                const centerY = (wrapper.offsetHeight - scaledLetterHeight) / 2;
+                
+                let currentX = startX;
+                
+                letters.forEach((letter) => {
+                    if (letter === ' ') {
+                        currentX += scaledSpaceWidth;
+                        return;
+                    }
+                    
+                    const letterDiv = document.createElement('div');
+                    letterDiv.className = 'trace-guide';
+                    letterDiv.textContent = letter;
+                    letterDiv.style.left = currentX + 'px';
+                    letterDiv.style.top = centerY + 'px';
+                    letterDiv.style.fontSize = (60 * scale) + 'px';
+                    letterDiv.style.width = scaledLetterWidth + 'px';
+                    letterDiv.style.textAlign = 'center';
+                    letterDiv.style.lineHeight = scaledLetterHeight + 'px';
+                    wrapper.appendChild(letterDiv);
+                    
+                    // Store letter position for validation
+                    letterPositions.push({
+                        letter: letter,
+                        x: currentX,
+                        y: centerY,
+                        width: scaledLetterWidth,
+                        height: scaledLetterHeight
+                    });
+                    
+                    currentX += scaledLetterWidth + scaledLetterSpacing;
+                });
+            }
+            
+            let drawingData = {
+                points: [],
+                isComplete: false
+            };
+
+            // Drawing functions
+            const startDrawing = (x, y) => {
+                if (x < 0 || x > canvas.width || y < 0 || y > canvas.height) return;
+                isDrawing = true;
+                ctx.beginPath();
+                ctx.moveTo(x, y);
+                drawingData.points = [{x, y}];
+            };
+
+            const draw = (x, y) => {
+                if (!isDrawing) return;
+                if (x < 0 || x > canvas.width || y < 0 || y > canvas.height) {
+                    stopDrawing();
+                    return;
+                }
+                ctx.lineTo(x, y);
+                ctx.stroke();
+                drawingData.points.push({x, y});
+            };
+
+            const stopDrawing = () => {
+                if (!isDrawing) return;
+                isDrawing = false;
+                ctx.beginPath();
+                drawingData.isComplete = true;
+            };
+
+            // Mouse events
+            canvas.addEventListener('mousedown', (e) => {
+                e.stopPropagation();
+                const rect = canvas.getBoundingClientRect();
+                const scaleX = canvas.width / rect.width;
+                const scaleY = canvas.height / rect.height;
+                const x = (e.clientX - rect.left) * scaleX;
+                const y = (e.clientY - rect.top) * scaleY;
+                startDrawing(x, y);
+            });
+
+            canvas.addEventListener('mousemove', (e) => {
+                if (!isDrawing) return;
+                e.stopPropagation();
+                const rect = canvas.getBoundingClientRect();
+                const scaleX = canvas.width / rect.width;
+                const scaleY = canvas.height / rect.height;
+                const x = (e.clientX - rect.left) * scaleX;
+                const y = (e.clientY - rect.top) * scaleY;
+                draw(x, y);
+            });
+
+            canvas.addEventListener('mouseup', (e) => {
+                e.stopPropagation();
+                stopDrawing();
+            });
+
+            canvas.addEventListener('mouseleave', (e) => {
+                e.stopPropagation();
+                stopDrawing();
+            });
+
+            // Touch events
+            canvas.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                const rect = canvas.getBoundingClientRect();
+                const scaleX = canvas.width / rect.width;
+                const scaleY = canvas.height / rect.height;
+                const touch = e.touches[0];
+                const x = (touch.clientX - rect.left) * scaleX;
+                const y = (touch.clientY - rect.top) * scaleY;
+                startDrawing(x, y);
+            });
+
+            canvas.addEventListener('touchmove', (e) => {
+                if (!isDrawing) return;
+                e.preventDefault();
+                e.stopPropagation();
+                const rect = canvas.getBoundingClientRect();
+                const scaleX = canvas.width / rect.width;
+                const scaleY = canvas.height / rect.height;
+                const touch = e.touches[0];
+                const x = (touch.clientX - rect.left) * scaleX;
+                const y = (touch.clientY - rect.top) * scaleY;
+                draw(x, y);
+            });
+
+            canvas.addEventListener('touchend', (e) => {
+                e.stopPropagation();
+                stopDrawing();
+            });
+
+            wrapper.appendChild(canvas);
+            container.appendChild(wrapper);
+            
+            // Create button group
+            const buttonGroup = document.createElement('div');
+            buttonGroup.className = 'button-group';
+            
+            // Add clear button
+            const clearBtn = document.createElement('button');
+            clearBtn.className = 'clear-btn';
+            clearBtn.textContent = '🧹 Clear Tracing';
+            clearBtn.onclick = function(e) {
+                e.stopPropagation();
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                drawingData.points = [];
+                drawingData.isComplete = false;
+                traceFeedback.textContent = '';
+                isDrawing = false;
+            };
+            
+            // Add trace check button
+            const traceCheckBtn = document.createElement('button');
+            traceCheckBtn.className = 'trace-check-btn';
+            traceCheckBtn.textContent = '✓ Check Tracing';
+            traceCheckBtn.onclick = function(e) {
+                e.stopPropagation();
+                checkTracing(drawingData, letterPositions, traceFeedback);
+                isDrawing = false;
+            };
+            
+            // Add tracing feedback
+            const traceFeedback = document.createElement('div');
+            traceFeedback.className = 'feedback';
+            
+            // Add tracing stats
+            const tracingStats = document.createElement('div');
+            tracingStats.className = 'tracing-stats';
+            tracingStats.textContent = `Trace the word: ${word}`;
+            
+            buttonGroup.appendChild(clearBtn);
+            buttonGroup.appendChild(traceCheckBtn);
+            
+            container.appendChild(tracingStats);
+            container.appendChild(buttonGroup);
+            container.appendChild(traceFeedback);
+            
+            // Store the positionLetters function for resize
+            canvas.positionLetters = () => positionLetters(word, wrapper, canvas.width);
+            
+            return container;
+        }
+
+        function checkTracing(drawingData, letterPositions, feedback) {
+            if (drawingData.points.length < 10) {
+                feedback.textContent = 'Please trace the letters first!';
+                feedback.className = 'feedback incorrect';
+                return false;
+            }
+            
+            let coveredLetters = 0;
+            const coverageThreshold = 0.3;
+            
+            letterPositions.forEach(letter => {
+                let pointsInLetter = 0;
+                drawingData.points.forEach(point => {
+                    if (point.x >= letter.x && point.x <= letter.x + letter.width &&
+                        point.y >= letter.y && point.y <= letter.y + letter.height) {
+                        pointsInLetter++;
+                    }
+                });
+                
+                const coverage = pointsInLetter / drawingData.points.length;
+                if (coverage > coverageThreshold) {
+                    coveredLetters++;
+                }
+            });
+            
+            const requiredCoverage = Math.max(1, letterPositions.length * 0.7);
+            
+            if (coveredLetters >= requiredCoverage) {
+                feedback.textContent = '🎉 Great tracing! Now type the word below.';
+                feedback.className = 'feedback correct';
+                return true;
+            } else {
+                feedback.textContent = 'Good start! Try to trace more of the letters.';
+                feedback.className = 'feedback incorrect';
+                return false;
+            }
+        }
+
+        function createWordSection(wordObj, index) {
+            const section = document.createElement('div');
+            section.className = 'word-section';
+            section.id = `word-${index}`;
+            
+            // Create single play button
+            const playBtn = document.createElement('button');
+            playBtn.className = 'play-btn';
+            playBtn.innerHTML = '▶️ Listen to "' + wordObj.word + '"';
+            playBtn.onclick = function(e) {
+                e.stopPropagation();
+                playWordAudio(wordObj.word);
+            };
+            
+            // Create tracing area
+            const tracingArea = createTracingArea(wordObj.word, index);
+            
+            // Create typing area
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'typing-area';
+            
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.className = 'typing-input';
+            input.placeholder = 'Type the word here...';
+            input.dataset.correctWord = wordObj.word.toLowerCase();
+            
+            // Create check button
+            const checkBtn = document.createElement('button');
+            checkBtn.className = 'check-btn';
+            checkBtn.textContent = '✓ Check Spelling';
+            checkBtn.onclick = function(e) {
+                e.stopPropagation();
+                const feedback = section.querySelector('.typing-feedback');
+                checkWord(input, feedback);
+            };
+            
+            // Create feedback area
+            const feedback = document.createElement('div');
+            feedback.className = 'feedback typing-feedback';
+            
+            // Assemble the section
+            section.appendChild(playBtn);
+            section.appendChild(tracingArea);
+            section.appendChild(typingDiv);
+            typingDiv.appendChild(input);
+            typingDiv.appendChild(checkBtn);
+            section.appendChild(feedback);
+            
+            return section;
+        }
+
+        function playWordAudio(word) {
+            const audioFile = words.find(w => w.word === word)?.audio;
+            if (audioFile) {
+                const audio = new Audio(audioFile);
+                audio.play().catch(e => {
+                    console.log('Audio play failed:', e);
+                    alert(`Audio file ${audioFile} not found. Please make sure the audio files are in the same folder.`);
+                });
+            }
+        }
+
+        function initializeWords() {
+            const container = document.getElementById('word-sections');
+            
+            words.forEach((wordObj, index) => {
+                if (index === 4) {
+                    const familyTitle = document.createElement('div');
+                    familyTitle.className = 'section-title';
+                    familyTitle.textContent = 'My Family';
+                    container.appendChild(familyTitle);
+                } else if (index === 9) {
+                    const thingsTitle = document.createElement('div');
+                    thingsTitle.className = 'section-title';
+                    thingsTitle.textContent = 'Fun Things!';
+                    container.appendChild(thingsTitle);
+                }
+                
+                const section = createWordSection(wordObj, index);
+                container.appendChild(section);
+            });
+        }
+
+        function checkWord(input, feedback) {
+            const userInput = input.value.trim().toLowerCase();
+            const correctWord = input.dataset.correctWord.toLowerCase();
+            
+            if (userInput === correctWord) {
+                feedback.textContent = '🎉 Excellent! Correct!';
+                feedback.className = 'feedback correct';
+            } else {
+                feedback.textContent = 'Try again! You can do it! 💪';
+                feedback.className = 'feedback incorrect';
+                input.focus();
+            }
+        }
+
+        function playAllWords() {
+            let index = 0;
+            
+            function playNextWord() {
+                if (index < words.length) {
+                    playWordAudio(words[index].word);
+                    index++;
+                    setTimeout(playNextWord, 2000);
+                }
+            }
+            
+            playNextWord();
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeWords();
+        });
+
+        // Handle window resize
+        window.addEventListener('resize', function() {
+            const canvases = document.querySelectorAll('.drawing-canvas');
+            canvases.forEach(canvas => {
+                if (canvas.positionLetters) {
+                    const wrapper = canvas.parentElement;
+                    const rect = wrapper.getBoundingClientRect();
+                    canvas.width = rect.width;
+                    canvas.height = rect.height;
+                    canvas.positionLetters();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
