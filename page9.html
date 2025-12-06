@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vocabulary Voice Dictionary</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #6b9fff 0%, #a8c6ff 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            width: 100%;
+            max-width: 500px;
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(to right, #4a6fff, #6b9fff);
+            color: white;
+            padding: 25px 20px;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+        
+        .subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        .dictionary-list {
+            padding: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .word-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background-color 0.2s;
+        }
+        
+        .word-item:hover {
+            background-color: #f9f9f9;
+        }
+        
+        .word-item:last-child {
+            border-bottom: none;
+        }
+        
+        .word {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .play-btn {
+            background-color: #4a6fff;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(74, 111, 255, 0.3);
+        }
+        
+        .play-btn:hover {
+            background-color: #6b9fff;
+            transform: scale(1.05);
+        }
+        
+        .play-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .play-btn.playing {
+            background-color: #4cd964;
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(76, 217, 100, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(76, 217, 100, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(76, 217, 100, 0);
+            }
+        }
+        
+        .play-btn i {
+            font-size: 20px;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 15px;
+            background-color: #f9f9f9;
+            color: #666;
+            font-size: 14px;
+        }
+        
+        /* Responsive design */
+        @media (max-width: 480px) {
+            .container {
+                border-radius: 15px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+            
+            .word {
+                font-size: 18px;
+            }
+            
+            .play-btn {
+                width: 45px;
+                height: 45px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Vocabulary Voice Dictionary</h1>
+            <p class="subtitle">Click the play button to hear pronunciation</p>
+        </header>
+        
+        <div class="dictionary-list">
+            <div class="word-item">
+                <span class="word">lobster</span>
+                <button class="play-btn" data-word="lobster">
+                    <i class="fas fa-play"></i>
+                </button>
+            </div>
+            
+            <div class="word-item">
+                <span class="word">cloth</span>
+                <button class="play-btn" data-word="cloth">
+                    <i class="fas fa-play"></i>
+                </button>
+            </div>
+            
+            <div class="word-item">
+                <span class="word">tent</span>
+                <button class="play-btn" data-word="tent">
+                    <i class="fas fa-play"></i>
+                </button>
+            </div>
+            
+            <div class="word-item">
+                <span class="word">coconut tree</span>
+                <button class="play-btn" data-word="coconut tree">
+                    <i class="fas fa-play"></i>
+                </button>
+            </div>
+            
+            <div class="word-item">
+                <span class="word">monkeys</span>
+                <button class="play-btn" data-word="monkeys">
+                    <i class="fas fa-play"></i>
+                </button>
+            </div>
+            
+            <div class="word-item">
+                <span class="word">fall</span>
+                <button class="play-btn" data-word="fall">
+                    <i class="fas fa-play"></i>
+                </button>
+            </div>
+            
+            <div class="word-item">
+                <span class="word">fell</span>
+                <button class="play-btn" data-word="fell">
+                    <i class="fas fa-play"></i>
+                </button>
+            </div>
+            
+            <div class="word-item">
+                <span class="word">catch</span>
+                <button class="play-btn" data-word="catch">
+                    <i class="fas fa-play"></i>
+                </button>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Click any play button to hear the word pronunciation</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const playButtons = document.querySelectorAll('.play-btn');
+            let currentAudio = null;
+            let currentButton = null;
+            
+            // Create audio elements for each word using your MP3 files
+            const audioElements = {
+                'lobster': new Audio('SFR2.1.mp3'),
+                'cloth': new Audio('SFR2.2.mp3'),
+                'tent': new Audio('SFR2.3.mp3'),
+                'coconut tree': new Audio('SFR2.4.mp3'),
+                'monkeys': new Audio('SFR2.5.mp3'),
+                'fall': new Audio('SFR2.6.mp3'),
+                'fell': new Audio('SFR2.7.mp3'),
+                'catch': new Audio('SFR2.8.mp3')
+            };
+            
+            // Set volume for all audio elements
+            Object.values(audioElements).forEach(audio => {
+                audio.volume = 0.7;
+            });
+            
+            playButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const word = this.getAttribute('data-word');
+                    const audio = audioElements[word];
+                    
+                    // If the same button is clicked again, stop the audio
+                    if (currentButton === this && !audio.paused) {
+                        audio.pause();
+                        audio.currentTime = 0;
+                        this.classList.remove('playing');
+                        this.innerHTML = '<i class="fas fa-play"></i>';
+                        currentButton = null;
+                        return;
+                    }
+                    
+                    // Stop any currently playing audio
+                    if (currentAudio && currentAudio !== audio) {
+                        currentAudio.pause();
+                        currentAudio.currentTime = 0;
+                    }
+                    
+                    if (currentButton && currentButton !== this) {
+                        currentButton.classList.remove('playing');
+                        currentButton.innerHTML = '<i class="fas fa-play"></i>';
+                    }
+                    
+                    // Play the selected audio
+                    audio.play().catch(error => {
+                        console.error("Error playing audio:", error);
+                        alert('Error playing audio for: ' + word);
+                    });
+                    
+                    this.classList.add('playing');
+                    this.innerHTML = '<i class="fas fa-stop"></i>';
+                    
+                    currentAudio = audio;
+                    currentButton = this;
+                    
+                    // Reset button when audio ends
+                    audio.onended = function() {
+                        button.classList.remove('playing');
+                        button.innerHTML = '<i class="fas fa-play"></i>';
+                        currentButton = null;
+                    };
+                    
+                    // Handle audio errors
+                    audio.onerror = function() {
+                        alert('Error loading audio file for: ' + word);
+                        button.classList.remove('playing');
+                        button.innerHTML = '<i class="fas fa-play"></i>';
+                        currentButton = null;
+                    };
+                });
+            });
+        });
+    </script>
+</body>
+</html>
