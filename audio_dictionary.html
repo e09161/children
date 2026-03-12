@@ -3,17 +3,177 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Audio Dictionary</title>
+    <title>Audio Dictionary: People & Places</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Add your CSS here */
+        /* Copy ALL the CSS from the previous message here */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            width: 100%;
+            max-width: 600px;
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(to right, #667eea, #764ba2);
+            color: white;
+            padding: 25px 20px;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+        
+        .subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        .voice-note {
+            background: rgba(255,255,255,0.2);
+            padding: 8px 15px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        
+        .dictionary-list {
+            padding: 20px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        
+        .word-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background-color 0.2s;
+            border-radius: 8px;
+        }
+        
+        .word-item:hover {
+            background-color: #f8f4ff;
+        }
+        
+        .word {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            flex: 1;
+        }
+        
+        .play-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(102, 126, 234, 0.3);
+            margin-left: 15px;
+            flex-shrink: 0;
+        }
+        
+        .play-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .play-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .play-btn.playing {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(245, 87, 108, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(245, 87, 108, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(245, 87, 108, 0);
+            }
+        }
+        
+        .play-btn i {
+            font-size: 18px;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 15px;
+            background-color: #f9f9f9;
+            color: #666;
+            font-size: 14px;
+            border-top: 1px solid #eee;
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                border-radius: 15px;
+                max-width: 95%;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+            
+            .word {
+                font-size: 16px;
+            }
+            
+            .play-btn {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .dictionary-list {
+                max-height: 450px;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
             <h1>Audio Dictionary</h1>
+            <p class="subtitle">People, Places & Expressions</p>
+            <span class="voice-note"><i class="fas fa-microphone-alt"></i> 13 words • different voices</span>
         </header>
+        
         <div class="dictionary-list">
             <div class="word-item">
                 <span class="word">What's his name?</span>
@@ -21,70 +181,176 @@
                     <i class="fas fa-play"></i>
                 </button>
             </div>
-
             <div class="word-item">
                 <span class="word">What's her name?</span>
                 <button class="play-btn" data-word="What's her name?">
                     <i class="fas fa-play"></i>
                 </button>
             </div>
-
             <div class="word-item">
                 <span class="word">Who's he?</span>
                 <button class="play-btn" data-word="Who's he?">
                     <i class="fas fa-play"></i>
                 </button>
             </div>
-
             <div class="word-item">
                 <span class="word">Who's she?</span>
                 <button class="play-btn" data-word="Who's she?">
                     <i class="fas fa-play"></i>
                 </button>
             </div>
-
             <div class="word-item">
                 <span class="word">Who are they?</span>
                 <button class="play-btn" data-word="Who are they?">
                     <i class="fas fa-play"></i>
                 </button>
             </div>
-
             <div class="word-item">
                 <span class="word">lake Lucerne</span>
                 <button class="play-btn" data-word="lake Lucerne">
                     <i class="fas fa-play"></i>
                 </button>
             </div>
-
+            <div class="word-item">
+                <span class="word">Switzerland</span>
+                <button class="play-btn" data-word="Switzerland">
+                    <i class="fas fa-play"></i>
+                </button>
+            </div>
+            <div class="word-item">
+                <span class="word">bow to his hat</span>
+                <button class="play-btn" data-word="bow to his hat">
+                    <i class="fas fa-play"></i>
+                </button>
+            </div>
+            <div class="word-item">
+                <span class="word">they are all afraid of him</span>
+                <button class="play-btn" data-word="they are all afraid of him">
+                    <i class="fas fa-play"></i>
+                </button>
+            </div>
+            <div class="word-item">
+                <span class="word">walk past Baron's hat</span>
+                <button class="play-btn" data-word="walk past Baron's hat">
+                    <i class="fas fa-play"></i>
+                </button>
+            </div>
+            <div class="word-item">
+                <span class="word">What's this?</span>
+                <button class="play-btn" data-word="What's this?">
+                    <i class="fas fa-play"></i>
+                </button>
+            </div>
             <div class="word-item">
                 <span class="word">take him</span>
                 <button class="play-btn" data-word="take him">
                     <i class="fas fa-play"></i>
                 </button>
             </div>
-
             <div class="word-item">
                 <span class="word">shoot through this apple</span>
                 <button class="play-btn" data-word="shoot through this apple">
                     <i class="fas fa-play"></i>
                 </button>
             </div>
-</div>
+        </div>
+        
+        <footer>
+            <p><i class="fas fa-headphones"></i> Click any button to hear pronunciation • Each word has a unique voice</p>
+        </footer>
     </div>
+
     <script>
-        // JavaScript will be inserted here
-    
-    const audioElements = {
-        'What\'s his name?': new Audio('audio/audio_01_whats_his_name.mp3'),
-        'What\'s her name?': new Audio('audio/audio_02_whats_her_name.mp3'),
-        'Who\'s he?': new Audio('audio/audio_03_whos_he.mp3'),
-        'Who\'s she?': new Audio('audio/audio_04_whos_she.mp3'),
-        'Who are they?': new Audio('audio/audio_05_who_are_they.mp3'),
-        'lake Lucerne': new Audio('audio/audio_06_lake_lucerne.mp3'),
-        'take him': new Audio('audio/audio_12_take_him.mp3'),
-        'shoot through this apple': new Audio('audio/audio_13_shoot_through_this_apple.mp3'),
-    };
-</script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const playButtons = document.querySelectorAll('.play-btn');
+            let currentAudio = null;
+            let currentButton = null;
+            
+            // Audio elements - looking in main root (no 'audio/' folder)
+            const audioElements = {
+                'What\'s his name?': new Audio('audio_01_whats_his_name.mp3'),
+                'What\'s her name?': new Audio('audio_02_whats_her_name.mp3'),
+                'Who\'s he?': new Audio('audio_03_whos_he.mp3'),
+                'Who\'s she?': new Audio('audio_04_whos_she.mp3'),
+                'Who are they?': new Audio('audio_05_who_are_they.mp3'),
+                'lake Lucerne': new Audio('audio_06_lake_lucerne.mp3'),
+                'Switzerland': new Audio('audio_07_switzerland.mp3'),
+                'bow to his hat': new Audio('audio_08_bow_to_his_hat.mp3'),
+                'they are all afraid of him': new Audio('audio_09_they_are_all_afraid_of_him.mp3'),
+                'walk past Baron\'s hat': new Audio('audio_10_walk_past_barons_hat.mp3'),
+                'What\'s this?': new Audio('audio_11_whats_this.mp3'),
+                'take him': new Audio('audio_12_take_him.mp3'),
+                'shoot through this apple': new Audio('audio_13_shoot_through_this_apple.mp3')
+            };
+            
+            // Set volume for all audio elements
+            Object.values(audioElements).forEach(audio => {
+                audio.volume = 0.7;
+            });
+            
+            playButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const word = this.getAttribute('data-word');
+                    const audio = audioElements[word];
+                    
+                    if (!audio) {
+                        alert('Audio file not found for: ' + word);
+                        return;
+                    }
+                    
+                    // If the same button is clicked again, stop the audio
+                    if (currentButton === this && !audio.paused) {
+                        audio.pause();
+                        audio.currentTime = 0;
+                        this.classList.remove('playing');
+                        this.innerHTML = '<i class="fas fa-play"></i>';
+                        currentButton = null;
+                        currentAudio = null;
+                        return;
+                    }
+                    
+                    // Stop any currently playing audio
+                    if (currentAudio && currentAudio !== audio) {
+                        currentAudio.pause();
+                        currentAudio.currentTime = 0;
+                    }
+                    
+                    if (currentButton && currentButton !== this) {
+                        currentButton.classList.remove('playing');
+                        currentButton.innerHTML = '<i class="fas fa-play"></i>';
+                    }
+                    
+                    // Play the selected audio
+                    audio.play().catch(error => {
+                        console.error("Error playing audio:", error);
+                        alert('Error playing audio. Please check if the audio file exists.');
+                    });
+                    
+                    this.classList.add('playing');
+                    this.innerHTML = '<i class="fas fa-stop"></i>';
+                    
+                    currentAudio = audio;
+                    currentButton = this;
+                    
+                    // Reset button when audio ends
+                    audio.onended = function() {
+                        button.classList.remove('playing');
+                        button.innerHTML = '<i class="fas fa-play"></i>';
+                        currentButton = null;
+                        currentAudio = null;
+                    };
+                    
+                    // Handle audio errors
+                    audio.onerror = function() {
+                        console.error('Audio error for:', word);
+                        button.classList.remove('playing');
+                        button.innerHTML = '<i class="fas fa-play"></i>';
+                        currentButton = null;
+                        currentAudio = null;
+                    };
+                });
+            });
+        });
+    </script>
 </body>
 </html>
