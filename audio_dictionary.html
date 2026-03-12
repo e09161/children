@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio Dictionary</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Add your CSS here */
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Audio Dictionary</h1>
+        </header>
+        <div class="dictionary-list">
+            <div class="word-item">
+                <span class="word">What's his name?</span>
+                <button class="play-btn" data-word="What's his name?">
+                    <i class="fas fa-play"></i>
+                </button>
+            </div>
+
+            <div class="word-item">
+                <span class="word">What's her name?</span>
+                <button class="play-btn" data-word="What's her name?">
+                    <i class="fas fa-play"></i>
+                </button>
+            </div>
+
+            <div class="word-item">
+                <span class="word">Who's he?</span>
+                <button class="play-btn" data-word="Who's he?">
+                    <i class="fas fa-play"></i>
+                </button>
+            </div>
+
+            <div class="word-item">
+                <span class="word">Who's she?</span>
+                <button class="play-btn" data-word="Who's she?">
+                    <i class="fas fa-play"></i>
+                </button>
+            </div>
+
+            <div class="word-item">
+                <span class="word">Who are they?</span>
+                <button class="play-btn" data-word="Who are they?">
+                    <i class="fas fa-play"></i>
+                </button>
+            </div>
+
+            <div class="word-item">
+                <span class="word">lake Lucerne</span>
+                <button class="play-btn" data-word="lake Lucerne">
+                    <i class="fas fa-play"></i>
+                </button>
+            </div>
+
+            <div class="word-item">
+                <span class="word">take him</span>
+                <button class="play-btn" data-word="take him">
+                    <i class="fas fa-play"></i>
+                </button>
+            </div>
+
+            <div class="word-item">
+                <span class="word">shoot through this apple</span>
+                <button class="play-btn" data-word="shoot through this apple">
+                    <i class="fas fa-play"></i>
+                </button>
+            </div>
+</div>
+    </div>
+    <script>
+        // JavaScript will be inserted here
+    
+    const audioElements = {
+        'What\'s his name?': new Audio('audio/audio_01_whats_his_name.mp3'),
+        'What\'s her name?': new Audio('audio/audio_02_whats_her_name.mp3'),
+        'Who\'s he?': new Audio('audio/audio_03_whos_he.mp3'),
+        'Who\'s she?': new Audio('audio/audio_04_whos_she.mp3'),
+        'Who are they?': new Audio('audio/audio_05_who_are_they.mp3'),
+        'lake Lucerne': new Audio('audio/audio_06_lake_lucerne.mp3'),
+        'take him': new Audio('audio/audio_12_take_him.mp3'),
+        'shoot through this apple': new Audio('audio/audio_13_shoot_through_this_apple.mp3'),
+    };
+</script>
+</body>
+</html>
