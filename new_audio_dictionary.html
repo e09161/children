@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>William Tell Audio Dictionary</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #2b6c4e 0%, #4a9b6e 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            width: 100%;
+            max-width: 650px;
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(to right, #1e4d3a, #2b6c4e);
+            color: white;
+            padding: 25px 20px;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+        
+        .subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        .voice-note {
+            background: rgba(255,255,255,0.2);
+            padding: 8px 15px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        
+        .dictionary-list {
+            padding: 20px;
+            max-height: 550px;
+            overflow-y: auto;
+        }
+        
+        .word-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 15px;
+            border-bottom: 1px solid #e0e0e0;
+            transition: background-color 0.2s;
+            border-radius: 8px;
+        }
+        
+        .word-item:hover {
+            background-color: #e8f5e9;
+        }
+        
+        .word {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1e4d3a;
+            flex: 1;
+        }
+        
+        .play-btn {
+            background: linear-gradient(135deg, #1e4d3a, #2b6c4e);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(30, 77, 58, 0.3);
+            margin-left: 15px;
+            flex-shrink: 0;
+        }
+        
+        .play-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 15px rgba(30, 77, 58, 0.4);
+        }
+        
+        .play-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .play-btn.playing {
+            background: linear-gradient(135deg, #c44536, #e65c4b);
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(196, 69, 54, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(196, 69, 54, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(196, 69, 54, 0);
+            }
+        }
+        
+        .play-btn i {
+            font-size: 18px;
+        }
+        
+        .category-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-right: 10px;
+            background: #c8e6c9;
+            color: #1e4d3a;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 15px;
+            background-color: #f5f9f5;
+            color: #2b6c4e;
+            font-size: 14px;
+            border-top: 1px solid #c8e6c9;
+        }
+        
+        .story-note {
+            background-color: #e8f5e9;
+            padding: 12px 20px;
+            border-bottom: 1px solid #c8e6c9;
+            font-style: italic;
+            color: #1e4d3a;
+            font-size: 14px;
+            text-align: center;
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                border-radius: 15px;
+                max-width: 95%;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+            
+            .word {
+                font-size: 16px;
+            }
+            
+            .play-btn {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .dictionary-list {
+                max-height: 500px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>William Tell Story Dictionary</h1>
+            <p class="subtitle">Words & phrases from the legend</p>
+            <span class="voice-note"><i class="fas fa-microphone-alt"></i> 11 phrases • Edge TTS voices</span>
+        </header>
+        
+        <div class="story-note">
+            <i class="fas fa-book-open"></i> Follow the story of William Tell through these phrases
+        </div>
+        
+        <div class="dictionary-list" id="wordList">
+            <!-- Words will be populated by JavaScript -->
+        </div>
+        
+        <footer>
+            <p><i class="fas fa-headphones"></i> Click any button to hear pronunciation • William Tell legend</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // The words in order - matching the generated filenames
+            const words = [
+                "He didn't bow to the hat",
+                "Where's the apple?",
+                "It's on his head.",
+                "The crayon is on the desk.",
+                "The pencil is under the desk.",
+                "The bag is next to the desk.",
+                "The bag is in the barn.",
+                "The arrow goes through the apple.",
+                "The arrow goes into the tree.",
+                "He takes the arrow out.",
+                "The boat is on the lake."
+            ];
+            
+            // Filenames - must match what the generator created
+            const filenames = [
+                "new_audio_01_he_didnt_bow_to_the_hat.mp3",
+                "new_audio_02_wheres_the_apple.mp3",
+                "new_audio_03_its_on_his_head.mp3",
+                "new_audio_04_the_crayon_is_on_the_desk.mp3",
+                "new_audio_05_the_pencil_is_under_the_desk.mp3",
+                "new_audio_06_the_bag_is_next_to_the_desk.mp3",
+                "new_audio_07_the_bag_is_in_the_barn.mp3",
+                "new_audio_08_the_arrow_goes_through_the_apple.mp3",
+                "new_audio_09_the_arrow_goes_into_the_tree.mp3",
+                "new_audio_10_he_takes_the_arrow_out.mp3",
+                "new_audio_11_the_boat_is_on_the_lake.mp3"
+            ];
+            
+            // Populate word list
+            const wordList = document.getElementById('wordList');
+            let htmlString = '';
+            
+            for (let i = 0; i < words.length; i++) {
+                let category = '';
+                if (i < 3) category = '<span class="category-badge">Story</span>';
+                else if (i < 7) category = '<span class="category-badge">Location</span>';
+                else category = '<span class="category-badge">Action</span>';
+                
+                htmlString += `
+                    <div class="word-item">
+                        <span class="word">${category} ${words[i]}</span>
+                        <button class="play-btn" data-index="${i}">
+                            <i class="fas fa-play"></i>
+                        </button>
+                    </div>
+                `;
+            }
+            
+            wordList.innerHTML = htmlString;
+            
+            // Audio setup
+            const audioElements = [];
+            for (let i = 0; i < filenames.length; i++) {
+                audioElements[i] = new Audio(filenames[i]);
+                audioElements[i].volume = 0.7;
+            }
+            
+            const playButtons = document.querySelectorAll('.play-btn');
+            let currentAudio = null;
+            let currentButton = null;
+            
+            playButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const index = this.getAttribute('data-index');
+                    const audio = audioElements[index];
+                    
+                    if (!audio) {
+                        alert('Audio file not found');
+                        return;
+                    }
+                    
+                    // Stop current audio if same button
+                    if (currentButton === this && !audio.paused) {
+                        audio.pause();
+                        audio.currentTime = 0;
+                        this.classList.remove('playing');
+                        this.innerHTML = '<i class="fas fa-play"></i>';
+                        currentButton = null;
+                        currentAudio = null;
+                        return;
+                    }
+                    
+                    // Stop any other playing audio
+                    if (currentAudio && currentAudio !== audio) {
+                        currentAudio.pause();
+                        currentAudio.currentTime = 0;
+                    }
+                    
+                    if (currentButton && currentButton !== this) {
+                        currentButton.classList.remove('playing');
+                        currentButton.innerHTML = '<i class="fas fa-play"></i>';
+                    }
+                    
+                    // Play new audio
+                    audio.play().catch(error => {
+                        console.error("Error playing audio:", error);
+                        alert('Error playing audio. File might be missing.');
+                    });
+                    
+                    this.classList.add('playing');
+                    this.innerHTML = '<i class="fas fa-stop"></i>';
+                    
+                    currentAudio = audio;
+                    currentButton = this;
+                    
+                    // Reset on end
+                    audio.onended = function() {
+                        button.classList.remove('playing');
+                        button.innerHTML = '<i class="fas fa-play"></i>';
+                        currentButton = null;
+                        currentAudio = null;
+                    };
+                    
+                    // Handle errors
+                    audio.onerror = function() {
+                        console.error('Audio error');
+                        button.classList.remove('playing');
+                        button.innerHTML = '<i class="fas fa-play"></i>';
+                        currentButton = null;
+                        currentAudio = null;
+                    };
+                });
+            });
+        });
+    </script>
+</body>
+</html>
