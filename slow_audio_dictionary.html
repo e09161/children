@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Children's Audio Dictionary - Slow Pronunciation</title>
+    <title>Children's Audio Dictionary</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -27,7 +27,7 @@
             border-radius: 30px;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
             width: 100%;
-            max-width: 700px;
+            max-width: 650px;
             overflow: hidden;
             border: 5px solid #ffd1d1;
         }
@@ -65,7 +65,7 @@
             color: #b45f06;
             padding: 8px 15px;
             border-radius: 30px;
-            display: flex;
+            display: inline-flex;
             align-items: center;
             gap: 8px;
             font-weight: bold;
@@ -79,14 +79,6 @@
             background: #fff9e6;
             padding: 15px 20px;
             border-bottom: 3px solid #ffd1d1;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        
-        .showcase-left {
             display: flex;
             align-items: center;
             gap: 15px;
@@ -115,24 +107,19 @@
         .word-item {
             background: white;
             border-radius: 20px;
-            padding: 15px;
-            margin-bottom: 15px;
+            padding: 18px 20px;
+            margin-bottom: 12px;
             box-shadow: 0 5px 15px rgba(255, 107, 107, 0.1);
             border: 2px solid #ffe0e0;
             transition: transform 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         
         .word-item:hover {
             transform: translateY(-3px);
             box-shadow: 0 8px 20px rgba(255, 107, 107, 0.2);
-        }
-        
-        .word-main {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
-            margin-bottom: 10px;
         }
         
         .word {
@@ -186,40 +173,6 @@
             }
         }
         
-        .voice-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 6px 15px;
-            border-radius: 40px;
-            font-size: 13px;
-            font-weight: 600;
-            background: #fff2d7;
-            color: #b45f06;
-            border: 2px solid #ffd966;
-            margin-right: 10px;
-        }
-        
-        .rate-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            padding: 6px 12px;
-            border-radius: 40px;
-            font-size: 13px;
-            font-weight: 600;
-            background: #d9e6f2;
-            color: #1e4d7c;
-            border: 2px solid #a3c6e9;
-        }
-        
-        .badge-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 5px;
-        }
-        
         footer {
             text-align: center;
             padding: 20px;
@@ -265,47 +218,31 @@
                 height: 50px;
                 font-size: 18px;
             }
-            
-            .badge-container {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            
-            .showcase-left {
-                flex-direction: column;
-                align-items: flex-start;
-            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>🐢 Slow & Clear Dictionary</h1>
+            <h1>Slow & Clear Dictionary</h1>
             <p class="subtitle">For young learners • Extra slow pronunciation</p>
             <div class="voice-note">
-                <i class="fas fa-microphone-alt"></i> 9 phrases • 9 different voices
+                <i class="fas fa-microphone-alt"></i> 9 phrases
             </div>
         </header>
         
         <div class="showcase">
-            <div class="showcase-left">
-                <div class="turtle-icon">
-                    <i class="fas fa-turtle"></i>
-                </div>
-                <div class="speed-badge">
-                    <i class="fas fa-hourglass-half"></i> All phrases spoken 15-20% SLOWER
-                </div>
+            <div class="turtle-icon">
+                <i class="fas fa-turtle"></i>
             </div>
-            <div>
-                <span class="voice-badge"><i class="fas fa-flag-usa"></i> 6 US</span>
-                <span class="voice-badge"><i class="fas fa-flag-uk"></i> 2 UK</span>
+            <div class="speed-badge">
+                <i class="fas fa-hourglass-half"></i> All spoken slowly & clearly
             </div>
         </div>
         
         <div class="story-note">
             <i class="fas fa-face-smile"></i>
-            <span>Listen and learn! Each phrase has its own character voice, spoken slowly and clearly.</span>
+            <span>Listen and learn! Click any button to hear the pronunciation.</span>
         </div>
         
         <div class="dictionary-list" id="wordList">
@@ -319,17 +256,17 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // The words with their voice descriptions
+            // Just the words - clean and simple
             const words = [
-                {text: "throw things", voice: "⚡ Energetic (US Male)", rate: "-15%"},
-                {text: "aren't afraid anymore", voice: "🦁 Brave (US Female)", rate: "-20%"},
-                {text: "the boat is out on the lake", voice: "🌊 Calm (UK Female)", rate: "-20%"},
-                {text: "there's a bad storm", voice: "⛈️ Serious (US Male)", rate: "-15%"},
-                {text: "Let's get him to help us!", voice: "🎉 Eager (US Female)", rate: "-10%"},
-                {text: "It's on the desk.", voice: "📚 Clear (US Male)", rate: "-20%"},
-                {text: "It's in the pencil case.", voice: "✏️ Friendly (US Female)", rate: "-20%"},
-                {text: "It's under the book.", voice: "📖 Authoritative (UK Male)", rate: "-15%"},
-                {text: "It's next to the rubber.", voice: "🧸 Warm (US Male)", rate: "-20%"}
+                "throw things",
+                "aren't afraid anymore",
+                "the boat is out on the lake",
+                "there's a bad storm",
+                "Let's get him to help us!",
+                "It's on the desk.",
+                "It's in the pencil case.",
+                "It's under the book.",
+                "It's next to the rubber."
             ];
             
             // Filenames - must match what the generator creates
@@ -345,27 +282,17 @@
                 "slow_audio_09_its_next_to_the_rubber.mp3"
             ];
             
-            // Populate word list
+            // Populate word list - clean, no labels
             const wordList = document.getElementById('wordList');
             let htmlString = '';
             
             for (let i = 0; i < words.length; i++) {
                 htmlString += `
                     <div class="word-item">
-                        <div class="word-main">
-                            <span class="word">${words[i].text}</span>
-                            <button class="play-btn" data-index="${i}">
-                                <i class="fas fa-play"></i>
-                            </button>
-                        </div>
-                        <div class="badge-container">
-                            <span class="voice-badge">
-                                <i class="fas fa-microphone"></i> ${words[i].voice}
-                            </span>
-                            <span class="rate-badge">
-                                <i class="fas fa-turtle"></i> ${words[i].rate} slower
-                            </span>
-                        </div>
+                        <span class="word">${words[i]}</span>
+                        <button class="play-btn" data-index="${i}">
+                            <i class="fas fa-play"></i>
+                        </button>
                     </div>
                 `;
             }
