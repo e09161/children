@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Audio Dictionary</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 25px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(to right, #667eea, #764ba2);
+            color: white;
+            padding: 25px 20px;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+        
+        .subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        .stats {
+            background: rgba(255,255,255,0.2);
+            padding: 8px 15px;
+            border-radius: 25px;
+            display: inline-block;
+            margin-top: 12px;
+            font-size: 14px;
+        }
+        
+        .section {
+            padding: 20px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .section-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 20px;
+            padding-bottom: 8px;
+            border-bottom: 3px solid #667eea;
+            display: inline-block;
+        }
+        
+        .word-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
+        }
+        
+        .word-card {
+            background: #f8f9ff;
+            border-radius: 18px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+            border: 2px solid #e9ecef;
+            gap: 12px;
+        }
+        
+        .word-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.2);
+            border-color: #667eea;
+        }
+        
+        .image-container {
+            width: 70px;
+            height: 70px;
+            background: white;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            padding: 8px;
+        }
+        
+        .image-container img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        
+        .word-info {
+            flex: 1;
+        }
+        
+        .word-text {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .play-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(102, 126, 234, 0.3);
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+        
+        .play-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        .play-btn.playing {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(245, 87, 108, 0.7); }
+            70% { box-shadow: 0 0 0 12px rgba(245, 87, 108, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(245, 87, 108, 0); }
+        }
+        
+        footer {
+            text-align: center;
+            padding: 18px;
+            background-color: #f0f2ff;
+            color: #667eea;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        @media (max-width: 650px) {
+            .word-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .word-text {
+                font-size: 18px;
+            }
+            
+            .image-container {
+                width: 55px;
+                height: 55px;
+            }
+            
+            .play-btn {
+                width: 42px;
+                height: 42px;
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📚 Complete Audio Dictionary</h1>
+            <p class="subtitle">Prepositions & Vocabulary with clear pronunciation</p>
+            <span class="stats"><i class="fas fa-microphone-alt"></i> 24 words • Slow & clear • Varied voices</span>
+        </header>
+        
+        <div class="section">
+            <div class="section-title"><i class="fas fa-location-dot"></i> Prepositions</div>
+            <div class="word-grid" id="prepositions-grid"></div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title"><i class="fas fa-school"></i> Classroom Objects</div>
+            <div class="word-grid" id="classroom-grid"></div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title"><i class="fas fa-crown"></i> Story Words</div>
+            <div class="word-grid" id="story-grid"></div>
+        </div>
+        
+        <footer>
+            <p><i class="fas fa-headphones"></i> Click any button to hear pronunciation • All spoken slowly & clearly</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // All words with high-quality, consistent images
+            const words = {
+                prepositions: [
+                    { word: "in front of", image: "https://e7.pngegg.com/pngimages/453/25/png-clipart-preposition-and-postposition-language-grammar-symbol-symbol-miscellaneous-english.png", audio: "complete_audio_01_in_front_of.mp3" },
+                    { word: "on", image: "https://e7.pngegg.com/pngimages/765/727/png-clipart-over-and-under-preposition-and-postposition-computer-icons-drawing-along-food-fruit.png", audio: "complete_audio_02_on.mp3" },
+                    { word: "behind", image: "https://tse2.mm.bing.net/th/id/OIP.YJ9MwAyvRWEzDRi3oYiH5QHaGl?pid=ImgDet&w=152&h=135&c=7&o=7&rm=3", audio: "complete_audio_03_behind.mp3" },
+                    { word: "in", image: "https://w7.pngwing.com/pngs/987/121/png-transparent-symbol-symbol-miscellaneous-orange-box.png", audio: "complete_audio_04_in.mp3" }
+                ],
+                classroom: [
+                    { word: "board", image: "https://www.shutterstock.com/image-vector/empty-white-marker-board-260nw-272382077.jpg", audio: "complete_audio_05_board.mp3" },
+                    { word: "bookcase", image: "https://www.thefurnitureco.net/wp-content/uploads/2020/07/WL12439-alt.jpeg", audio: "complete_audio_06_bookcase.mp3" },
+                    { word: "cupboard", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSkdUxPe6rDqClvfYSlfzQlYLHuMPInYjFSWA&s", audio: "complete_audio_07_cupboard.mp3" },
+                    { word: "door", image: "https://d3usa7hclic8la.cloudfront.net/Y8DFC5NK9/conversions/9-cropper.webp", audio: "complete_audio_08_door.mp3" },
+                    { word: "playground", image: "https://img.freepik.com/premium-vector/outdoor-playground-slide-kids_1639-37845.jpg?semt=ais_hybrid&w=740&q=80", audio: "complete_audio_09_playground.mp3" },
+                    { word: "ruler", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSlBaGd_nzAs8zY5Cf1XD40mAA-6LN6M2LIsQ&s", audio: "complete_audio_10_ruler.mp3" },
+                    { word: "wall", image: "https://img.freepik.com/premium-psd/empty-room-wall-mockup-psd-minimal-interior-design_53876-123260.jpg?semt=ais_hybrid&w=740&q=80", audio: "complete_audio_11_wall.mp3" },
+                    { word: "window", image: "https://static.vecteezy.com/system/resources/previews/035/867/907/non_2x/illustration-of-window-vector.jpg", audio: "complete_audio_12_window.mp3" }
+                ],
+                story: [
+                    { word: "boots", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTw8_4B-ZRmQCjPx3WpgbrncYKn69s42o1uWg&s", audio: "complete_audio_13_boots.mp3" },
+                    { word: "hat", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQXrvoCdqAx3cFPVygaxMTg6LS6X4WwlARtbA&s", audio: "complete_audio_14_hat.mp3" },
+                    { word: "ring", image: "https://www.candere.com/media/jewellery/images/C001952__1.jpeg", audio: "complete_audio_15_ring.mp3" },
+                    { word: "castle", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTAutSE41hiCt4vRSdWtp3RhQVMoJFQTI6xCA&s", audio: "complete_audio_16_castle.mp3" },
+                    { word: "rocks", image: "https://sandatlas.org/wp-content/uploads/Igneous-rocks-gabbro-andesite-pegmatite-basalt-pumice-porphyry-obsidian-granite-tuff.jpg.webp", audio: "complete_audio_17_rocks.mp3" },
+                    { word: "town", image: "https://media.baamboozle.com/uploads/images/139613/1607394021_333849", audio: "complete_audio_18_town.mp3" },
+                    { word: "Baron's men", image: "https://external-preview.redd.it/interview-with-the-cast-and-crew-of-a-knight-of-the-seven-v0-VCJN_nibLfIK2398yhxCg2rrFwZWmPDZb7Vq_cT17cQ.jpeg?width=640&crop=smart&auto=webp&s=c730e70a61f247e9e43d45f749cd7d3a78c7bf6a", audio: "complete_audio_19_barons_man.mp3" },
+                    { word: "steer", image: "https://www.usni.org/sites/default/files/styles/hero_image/public/Arms-NH-SO-20%201.jpg?itok=PF3wc_pB", audio: "complete_audio_20_steer.mp3" },
+                    { word: "arrows", image: "https://oldschool.runescape.wiki/images/thumb/Broad_arrows_detail.png/1039px-Broad_arrows_detail.png?f978f", audio: "complete_audio_21_arrows.mp3" }
+                ]
+            };
+            
+            // Helper function to create grid HTML
+            function createGrid(wordList) {
+                return wordList.map((item) => `
+                    <div class="word-card">
+                        <div class="image-container">
+                            <img src="${item.image}" alt="${item.word}" onerror="this.src='https://via.placeholder.com/70x70?text=${item.word}'">
+                        </div>
+                        <div class="word-info">
+                            <div class="word-text">${item.word}</div>
+                        </div>
+                        <button class="play-btn" data-audio="${item.audio}">
+                            <i class="fas fa-play"></i>
+                        </button>
+                    </div>
+                `).join('');
+            }
+            
+            // Populate grids
+            document.getElementById('prepositions-grid').innerHTML = createGrid(words.prepositions);
+            document.getElementById('classroom-grid').innerHTML = createGrid(words.classroom);
+            document.getElementById('story-grid').innerHTML = createGrid(words.story);
+            
+            // Setup audio
+            let currentAudio = null;
+            let currentButton = null;
+            
+            const playButtons = document.querySelectorAll('.play-btn');
+            
+            playButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const audioSrc = this.getAttribute('data-audio');
+                    const audio = new Audio(audioSrc);
+                    audio.volume = 0.8;
+                    
+                    // Stop if same button is playing
+                    if (currentButton === this && currentAudio && !currentAudio.paused) {
+                        currentAudio.pause();
+                        currentAudio.currentTime = 0;
+                        this.classList.remove('playing');
+                        this.innerHTML = '<i class="fas fa-play"></i>';
+                        currentButton = null;
+                        currentAudio = null;
+                        return;
+                    }
+                    
+                    // Stop any other playing audio
+                    if (currentAudio) {
+                        currentAudio.pause();
+                        currentAudio.currentTime = 0;
+                    }
+                    
+                    if (currentButton) {
+                        currentButton.classList.remove('playing');
+                        currentButton.innerHTML = '<i class="fas fa-play"></i>';
+                    }
+                    
+                    // Play new audio
+                    audio.play().catch(error => {
+                        console.error("Error playing audio:", error);
+                        alert('Error playing audio. File might be missing.');
+                    });
+                    
+                    this.classList.add('playing');
+                    this.innerHTML = '<i class="fas fa-stop"></i>';
+                    
+                    currentAudio = audio;
+                    currentButton = this;
+                    
+                    // Reset when audio ends
+                    audio.onended = function() {
+                        button.classList.remove('playing');
+                        button.innerHTML = '<i class="fas fa-play"></i>';
+                        currentButton = null;
+                        currentAudio = null;
+                    };
+                    
+                    // Handle errors
+                    audio.onerror = function() {
+                        console.error('Audio error for:', audioSrc);
+                        button.classList.remove('playing');
+                        button.innerHTML = '<i class="fas fa-play"></i>';
+                        currentButton = null;
+                        currentAudio = null;
+                    };
+                });
+            });
+        });
+    </script>
+</body>
+</html>
