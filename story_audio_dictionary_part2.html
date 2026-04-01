@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Apple Dream - Journey West | Audio Dictionary Part 2</title>
+    <title>The Apple Dream - Journey West | Audio Dictionary</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -20,7 +20,7 @@
         }
         
         .container {
-            max-width: 800px;
+            max-width: 750px;
             margin: 0 auto;
             background-color: #fffef7;
             border-radius: 28px;
@@ -86,17 +86,6 @@
         .story-preview i {
             color: #b87c3a;
             margin: 0 8px;
-        }
-        
-        .part-badge {
-            background: #b87c3a;
-            color: white;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: bold;
-            margin-left: 10px;
-            vertical-align: middle;
         }
         
         .dictionary-list {
@@ -182,30 +171,6 @@
             100% { box-shadow: 0 0 0 0 rgba(230, 126, 34, 0); }
         }
         
-        .badge {
-            display: inline-block;
-            background: #ffe0b3;
-            color: #8b5a2b;
-            font-size: 11px;
-            padding: 3px 10px;
-            border-radius: 20px;
-            margin-left: 12px;
-            font-weight: 600;
-        }
-        
-        .voice-note {
-            font-size: 11px;
-            color: #b87c3a;
-            margin-top: 4px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        
-        .voice-note i {
-            font-size: 10px;
-        }
-        
         footer {
             text-align: center;
             padding: 18px;
@@ -214,40 +179,6 @@
             font-size: 13px;
             font-weight: 500;
             border-top: 2px solid #e6ccb3;
-        }
-        
-        .nav-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-bottom: 20px;
-            padding: 10px 20px;
-            background: #fff3e0;
-            border-bottom: 1px solid #e6ccb3;
-        }
-        
-        .nav-btn {
-            background: #f0e0c0;
-            border: none;
-            padding: 8px 20px;
-            border-radius: 25px;
-            color: #8b5a2b;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .nav-btn.active {
-            background: #b87c3a;
-            color: white;
-        }
-        
-        .nav-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
         
         @media (max-width: 550px) {
@@ -271,15 +202,6 @@
             h1 {
                 font-size: 24px;
             }
-            
-            .nav-buttons {
-                gap: 12px;
-            }
-            
-            .nav-btn {
-                padding: 6px 14px;
-                font-size: 12px;
-            }
         }
         
         /* Custom scrollbar */
@@ -302,22 +224,13 @@
     <div class="container">
         <header>
             <div class="apple-icon">🍎 🌾</div>
-            <h1>The Apple Dream <span class="part-badge">Journey West</span></h1>
+            <h1>The Apple Dream: Journey West</h1>
             <p class="subtitle">A Story Dictionary • Part 2</p>
-            <span class="stats"><i class="fas fa-microphone-alt"></i> 9 new phrases • Varied voices • Moving West</span>
+            <span class="stats"><i class="fas fa-microphone-alt"></i> 9 phrases • Clear voices • Slow & steady</span>
         </header>
         
         <div class="story-preview">
             <p><i class="fas fa-quote-left"></i> With coffee sack and tin pot, spade and seeds... over the hills, across the plain... the dream grows <i class="fas fa-quote-right"></i></p>
-        </div>
-        
-        <div class="nav-buttons">
-            <button class="nav-btn" id="btnPart1">
-                <i class="fas fa-apple-alt"></i> Part 1: The Dream
-            </button>
-            <button class="nav-btn active" id="btnPart2">
-                <i class="fas fa-hiking"></i> Part 2: Journey West
-            </button>
         </div>
         
         <div class="dictionary-list" id="wordList">
@@ -325,107 +238,50 @@
         </div>
         
         <footer>
-            <p><i class="fas fa-headphones"></i> Click any button to hear the phrase • All spoken slowly & clearly with character voices</p>
+            <p><i class="fas fa-headphones"></i> Click any button to hear the phrase • All spoken slowly & clearly</p>
             <p style="font-size: 12px; margin-top: 5px;">🌳 "plants trees... people are moving West... the town people" 🌳</p>
         </footer>
     </div>
 
     <script>
-        // Part 1: Original story phrases
-        const part1Phrases = [
-            "September 1796",
-            "a small country town",
-            "Pennsylvania, America",
-            "a new baby",
-            "opens his eyes for the first time",
-            "looks out of the window",
-            "sees an apple tree",
-            "a young man",
-            "he has a dream",
-            "a land full of apple trees",
-            "nobody is hungry there",
-            "there are apples for everyone"
-        ];
-        
-        const part1Filenames = [
-            "story_audio_01_september_1796.mp3",
-            "story_audio_02_a_small_country_town.mp3",
-            "story_audio_03_pennsylvania_america.mp3",
-            "story_audio_04_a_new_baby.mp3",
-            "story_audio_05_opens_his_eyes_for_the_first_time.mp3",
-            "story_audio_06_looks_out_of_the_window.mp3",
-            "story_audio_07_sees_an_apple_tree.mp3",
-            "story_audio_08_a_young_man.mp3",
-            "story_audio_09_he_has_a_dream.mp3",
-            "story_audio_10_a_land_full_of_apple_trees.mp3",
-            "story_audio_11_nobody_is_hungry_there.mp3",
-            "story_audio_12_there_are_apples_for_everyone.mp3"
-        ];
-        
-        // Part 2: Journey West phrases
-        const part2Phrases = [
-            "coffee sack",
-            "tin pot",
-            "spade",
-            "seeds",
-            "over the hills",
-            "across the plain",
-            "plants trees",
-            "people are moving West",
-            "the town people"
-        ];
-        
-        const part2Filenames = [
-            "story_audio_13_coffee_sack.mp3",
-            "story_audio_14_tin_pot.mp3",
-            "story_audio_15_spade.mp3",
-            "story_audio_16_seeds.mp3",
-            "story_audio_17_over_the_hills.mp3",
-            "story_audio_18_across_the_plain.mp3",
-            "story_audio_19_plants_trees.mp3",
-            "story_audio_20_people_are_moving_west.mp3",
-            "story_audio_21_the_town_people.mp3"
-        ];
-        
-        // Voice descriptions for part 2 (for display)
-        const voiceDescriptions = {
-            "coffee sack": "🎤 GuyNeural • slow",
-            "tin pot": "🎤 JennyNeural • clear",
-            "spade": "🎤 DavisNeural • strong",
-            "seeds": "🎤 SaraNeural • gentle",
-            "over the hills": "🎤 EricNeural • adventurous",
-            "across the plain": "🎤 AriaNeural • expansive",
-            "plants trees": "🎤 ChristopherNeural • action",
-            "people are moving West": "🎤 NancyNeural • narrative",
-            "the town people": "🎤 RyanNeural (UK) • warm"
-        };
-        
-        let currentPart = 2;
-        let currentAudio = null;
-        let currentButton = null;
-        let audioElements = {};
-        
-        function renderPart(part) {
-            const phrases = part === 1 ? part1Phrases : part2Phrases;
-            const filenames = part === 1 ? part1Filenames : part2Filenames;
-            const startNumber = part === 1 ? 1 : 13;
+        document.addEventListener('DOMContentLoaded', function() {
+            // Journey West phrases in order
+            const storyPhrases = [
+                "coffee sack",
+                "tin pot",
+                "spade",
+                "seeds",
+                "over the hills",
+                "across the plain",
+                "plants trees",
+                "people are moving West",
+                "the town people"
+            ];
             
+            // Filenames
+            const filenames = [
+                "story_audio_13_coffee_sack.mp3",
+                "story_audio_14_tin_pot.mp3",
+                "story_audio_15_spade.mp3",
+                "story_audio_16_seeds.mp3",
+                "story_audio_17_over_the_hills.mp3",
+                "story_audio_18_across_the_plain.mp3",
+                "story_audio_19_plants_trees.mp3",
+                "story_audio_20_people_are_moving_west.mp3",
+                "story_audio_21_the_town_people.mp3"
+            ];
+            
+            // Generate HTML
             const wordList = document.getElementById('wordList');
             let htmlString = '';
             
-            for (let i = 0; i < phrases.length; i++) {
-                const phraseNumber = startNumber + i;
-                const voiceNote = (part === 2 && voiceDescriptions[phrases[i]]) ? 
-                    `<div class="voice-note"><i class="fas fa-microphone-alt"></i> ${voiceDescriptions[phrases[i]]}</div>` : '';
-                
+            for (let i = 0; i < storyPhrases.length; i++) {
+                const phraseNumber = 13 + i;
                 htmlString += `
                     <div class="word-card">
                         <div class="word-number">${String(phraseNumber).padStart(2, '0')}</div>
-                        <div style="flex: 1;">
-                            <div class="word-text">${phrases[i]}</div>
-                            ${voiceNote}
-                        </div>
-                        <button class="play-btn" data-index="${i}" data-part="${part}">
+                        <div class="word-text">${storyPhrases[i]}</div>
+                        <button class="play-btn" data-index="${i}">
                             <i class="fas fa-play"></i>
                         </button>
                     </div>
@@ -434,37 +290,21 @@
             
             wordList.innerHTML = htmlString;
             
-            // Re-initialize audio for this part
-            initializeAudio(part);
-        }
-        
-        function initializeAudio(part) {
-            const phrases = part === 1 ? part1Phrases : part2Phrases;
-            const filenames = part === 1 ? part1Filenames : part2Filenames;
-            
-            // Clear old audio elements
-            audioElements = {};
-            
-            // Create new audio elements
+            // Setup audio
+            const audioElements = [];
             for (let i = 0; i < filenames.length; i++) {
-                const audio = new Audio(filenames[i]);
-                audio.volume = 0.8;
-                audioElements[`${part}_${i}`] = audio;
+                audioElements[i] = new Audio(filenames[i]);
+                audioElements[i].volume = 0.8;
             }
             
-            // Attach event listeners to buttons
             const playButtons = document.querySelectorAll('.play-btn');
+            let currentAudio = null;
+            let currentButton = null;
             
             playButtons.forEach(button => {
-                // Remove any existing listeners by cloning
-                const newButton = button.cloneNode(true);
-                button.parentNode.replaceChild(newButton, button);
-                
-                newButton.addEventListener('click', function() {
-                    const index = parseInt(this.getAttribute('data-index'));
-                    const btnPart = parseInt(this.getAttribute('data-part'));
-                    const audioKey = `${btnPart}_${index}`;
-                    const audio = audioElements[audioKey];
+                button.addEventListener('click', function() {
+                    const index = this.getAttribute('data-index');
+                    const audio = audioElements[index];
                     
                     if (!audio) {
                         alert('Audio file not found. Please ensure the MP3 files are in the same directory.');
@@ -496,7 +336,7 @@
                     // Play new audio
                     audio.play().catch(error => {
                         console.error("Error playing audio:", error);
-                        alert(`Error playing audio: ${audio.src}\nPlease make sure the MP3 file exists.`);
+                        alert('Error playing audio. File might be missing.');
                         this.classList.remove('playing');
                         this.innerHTML = '<i class="fas fa-play"></i>';
                         currentButton = null;
@@ -511,61 +351,23 @@
                     
                     // Reset when audio ends
                     audio.onended = function() {
-                        if (newButton) {
-                            newButton.classList.remove('playing');
-                            newButton.innerHTML = '<i class="fas fa-play"></i>';
-                        }
+                        button.classList.remove('playing');
+                        button.innerHTML = '<i class="fas fa-play"></i>';
                         currentButton = null;
                         currentAudio = null;
                     };
                     
                     // Handle errors
                     audio.onerror = function() {
-                        console.error('Audio error for:', audio.src);
-                        if (newButton) {
-                            newButton.classList.remove('playing');
-                            newButton.innerHTML = '<i class="fas fa-play"></i>';
-                        }
+                        console.error('Audio error');
+                        button.classList.remove('playing');
+                        button.innerHTML = '<i class="fas fa-play"></i>';
                         currentButton = null;
                         currentAudio = null;
                     };
                 });
             });
-        }
-        
-        // Navigation buttons
-        document.getElementById('btnPart1').addEventListener('click', function() {
-            if (currentPart === 1) return;
-            currentPart = 1;
-            document.getElementById('btnPart1').classList.add('active');
-            document.getElementById('btnPart2').classList.remove('active');
-            
-            // Update header subtitle
-            document.querySelector('header .subtitle').textContent = 'A Story Dictionary • Part 1';
-            document.querySelector('.stats').innerHTML = '<i class="fas fa-microphone-alt"></i> 12 phrases • Slow & clear • Varied voices';
-            document.querySelector('.story-preview p').innerHTML = '<i class="fas fa-quote-left"></i> September 1796... a new baby opens his eyes... and dreams of a land full of apple trees <i class="fas fa-quote-right"></i>';
-            document.querySelector('footer p:last-child').innerHTML = '🍎 "nobody is hungry there... there are apples for everyone" 🍎';
-            
-            renderPart(1);
         });
-        
-        document.getElementById('btnPart2').addEventListener('click', function() {
-            if (currentPart === 2) return;
-            currentPart = 2;
-            document.getElementById('btnPart1').classList.remove('active');
-            document.getElementById('btnPart2').classList.add('active');
-            
-            // Update header subtitle
-            document.querySelector('header .subtitle').textContent = 'A Story Dictionary • Part 2 • Journey West';
-            document.querySelector('.stats').innerHTML = '<i class="fas fa-microphone-alt"></i> 9 new phrases • Varied voices • Moving West';
-            document.querySelector('.story-preview p').innerHTML = '<i class="fas fa-quote-left"></i> With coffee sack and tin pot, spade and seeds... over the hills, across the plain... the dream grows <i class="fas fa-quote-right"></i>';
-            document.querySelector('footer p:last-child').innerHTML = '🌳 "plants trees... people are moving West... the town people" 🌳';
-            
-            renderPart(2);
-        });
-        
-        // Initialize with Part 2
-        renderPart(2);
     </script>
 </body>
 </html>
