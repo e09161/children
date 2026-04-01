@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Apple Dream - Journey West | Audio Dictionary Part 2</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #7d5d42 0%, #a57548 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fffef7;
+            border-radius: 28px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            border: 1px solid #d4a373;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #5a3e2b 0%, #8b5e3c 100%);
+            color: white;
+            padding: 28px 20px;
+            text-align: center;
+        }
+        
+        .apple-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+            animation: gentleRock 3s ease-in-out infinite;
+        }
+        
+        @keyframes gentleRock {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(8deg); }
+        }
+        
+        h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+        
+        .subtitle {
+            font-size: 16px;
+            opacity: 0.95;
+            font-style: italic;
+        }
+        
+        .stats {
+            background: rgba(255,215,150,0.3);
+            padding: 8px 18px;
+            border-radius: 30px;
+            display: inline-block;
+            margin-top: 15px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .story-preview {
+            background: #fdf4e6;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 2px solid #e6ccb3;
+        }
+        
+        .story-preview p {
+            color: #6b4c3b;
+            font-size: 16px;
+            line-height: 1.6;
+            font-style: italic;
+        }
+        
+        .story-preview i {
+            color: #b87c3a;
+            margin: 0 8px;
+        }
+        
+        .part-badge {
+            background: #b87c3a;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+        
+        .dictionary-list {
+            padding: 20px;
+            max-height: 550px;
+            overflow-y: auto;
+        }
+        
+        .word-card {
+            background: white;
+            border-radius: 16px;
+            padding: 18px 20px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+            border: 1px solid #e6ccb3;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+        
+        .word-card:hover {
+            transform: translateX(5px);
+            border-color: #b87c3a;
+            box-shadow: 0 5px 15px rgba(184, 124, 58, 0.15);
+            background: #fffcf5;
+        }
+        
+        .word-text {
+            font-size: 18px;
+            font-weight: 500;
+            color: #4a2a0e;
+            line-height: 1.4;
+            flex: 1;
+            padding-right: 15px;
+        }
+        
+        .word-number {
+            background: #f0e0c0;
+            color: #8b5a2b;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        
+        .play-btn {
+            background: linear-gradient(135deg, #b87c3a, #8b5a2b);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(139, 90, 43, 0.3);
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+        
+        .play-btn:hover {
+            transform: scale(1.05);
+            background: linear-gradient(135deg, #d4944a, #a56e32);
+        }
+        
+        .play-btn.playing {
+            background: linear-gradient(135deg, #e67e22, #c0392b);
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(230, 126, 34, 0.7); }
+            70% { box-shadow: 0 0 0 12px rgba(230, 126, 34, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(230, 126, 34, 0); }
+        }
+        
+        .badge {
+            display: inline-block;
+            background: #ffe0b3;
+            color: #8b5a2b;
+            font-size: 11px;
+            padding: 3px 10px;
+            border-radius: 20px;
+            margin-left: 12px;
+            font-weight: 600;
+        }
+        
+        .voice-note {
+            font-size: 11px;
+            color: #b87c3a;
+            margin-top: 4px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .voice-note i {
+            font-size: 10px;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 18px;
+            background-color: #fdf4e6;
+            color: #b87c3a;
+            font-size: 13px;
+            font-weight: 500;
+            border-top: 2px solid #e6ccb3;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            background: #fff3e0;
+            border-bottom: 1px solid #e6ccb3;
+        }
+        
+        .nav-btn {
+            background: #f0e0c0;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 25px;
+            color: #8b5a2b;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .nav-btn.active {
+            background: #b87c3a;
+            color: white;
+        }
+        
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        @media (max-width: 550px) {
+            .word-text {
+                font-size: 16px;
+            }
+            
+            .word-number {
+                width: 32px;
+                height: 32px;
+                font-size: 11px;
+                margin-right: 12px;
+            }
+            
+            .play-btn {
+                width: 42px;
+                height: 42px;
+                font-size: 16px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+            
+            .nav-buttons {
+                gap: 12px;
+            }
+            
+            .nav-btn {
+                padding: 6px 14px;
+                font-size: 12px;
+            }
+        }
+        
+        /* Custom scrollbar */
+        .dictionary-list::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .dictionary-list::-webkit-scrollbar-track {
+            background: #f0e0c0;
+            border-radius: 10px;
+        }
+        
+        .dictionary-list::-webkit-scrollbar-thumb {
+            background: #b87c3a;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="apple-icon">🍎 🌾</div>
+            <h1>The Apple Dream <span class="part-badge">Journey West</span></h1>
+            <p class="subtitle">A Story Dictionary • Part 2</p>
+            <span class="stats"><i class="fas fa-microphone-alt"></i> 9 new phrases • Varied voices • Moving West</span>
+        </header>
+        
+        <div class="story-preview">
+            <p><i class="fas fa-quote-left"></i> With coffee sack and tin pot, spade and seeds... over the hills, across the plain... the dream grows <i class="fas fa-quote-right"></i></p>
+        </div>
+        
+        <div class="nav-buttons">
+            <button class="nav-btn" id="btnPart1">
+                <i class="fas fa-apple-alt"></i> Part 1: The Dream
+            </button>
+            <button class="nav-btn active" id="btnPart2">
+                <i class="fas fa-hiking"></i> Part 2: Journey West
+            </button>
+        </div>
+        
+        <div class="dictionary-list" id="wordList">
+            <!-- Words will be populated here -->
+        </div>
+        
+        <footer>
+            <p><i class="fas fa-headphones"></i> Click any button to hear the phrase • All spoken slowly & clearly with character voices</p>
+            <p style="font-size: 12px; margin-top: 5px;">🌳 "plants trees... people are moving West... the town people" 🌳</p>
+        </footer>
+    </div>
+
+    <script>
+        // Part 1: Original story phrases
+        const part1Phrases = [
+            "September 1796",
+            "a small country town",
+            "Pennsylvania, America",
+            "a new baby",
+            "opens his eyes for the first time",
+            "looks out of the window",
+            "sees an apple tree",
+            "a young man",
+            "he has a dream",
+            "a land full of apple trees",
+            "nobody is hungry there",
+            "there are apples for everyone"
+        ];
+        
+        const part1Filenames = [
+            "story_audio_01_september_1796.mp3",
+            "story_audio_02_a_small_country_town.mp3",
+            "story_audio_03_pennsylvania_america.mp3",
+            "story_audio_04_a_new_baby.mp3",
+            "story_audio_05_opens_his_eyes_for_the_first_time.mp3",
+            "story_audio_06_looks_out_of_the_window.mp3",
+            "story_audio_07_sees_an_apple_tree.mp3",
+            "story_audio_08_a_young_man.mp3",
+            "story_audio_09_he_has_a_dream.mp3",
+            "story_audio_10_a_land_full_of_apple_trees.mp3",
+            "story_audio_11_nobody_is_hungry_there.mp3",
+            "story_audio_12_there_are_apples_for_everyone.mp3"
+        ];
+        
+        // Part 2: Journey West phrases
+        const part2Phrases = [
+            "coffee sack",
+            "tin pot",
+            "spade",
+            "seeds",
+            "over the hills",
+            "across the plain",
+            "plants trees",
+            "people are moving West",
+            "the town people"
+        ];
+        
+        const part2Filenames = [
+            "story_audio_13_coffee_sack.mp3",
+            "story_audio_14_tin_pot.mp3",
+            "story_audio_15_spade.mp3",
+            "story_audio_16_seeds.mp3",
+            "story_audio_17_over_the_hills.mp3",
+            "story_audio_18_across_the_plain.mp3",
+            "story_audio_19_plants_trees.mp3",
+            "story_audio_20_people_are_moving_west.mp3",
+            "story_audio_21_the_town_people.mp3"
+        ];
+        
+        // Voice descriptions for part 2 (for display)
+        const voiceDescriptions = {
+            "coffee sack": "🎤 GuyNeural • slow",
+            "tin pot": "🎤 JennyNeural • clear",
+            "spade": "🎤 DavisNeural • strong",
+            "seeds": "🎤 SaraNeural • gentle",
+            "over the hills": "🎤 EricNeural • adventurous",
+            "across the plain": "🎤 AriaNeural • expansive",
+            "plants trees": "🎤 ChristopherNeural • action",
+            "people are moving West": "🎤 NancyNeural • narrative",
+            "the town people": "🎤 RyanNeural (UK) • warm"
+        };
+        
+        let currentPart = 2;
+        let currentAudio = null;
+        let currentButton = null;
+        let audioElements = {};
+        
+        function renderPart(part) {
+            const phrases = part === 1 ? part1Phrases : part2Phrases;
+            const filenames = part === 1 ? part1Filenames : part2Filenames;
+            const startNumber = part === 1 ? 1 : 13;
+            
+            const wordList = document.getElementById('wordList');
+            let htmlString = '';
+            
+            for (let i = 0; i < phrases.length; i++) {
+                const phraseNumber = startNumber + i;
+                const voiceNote = (part === 2 && voiceDescriptions[phrases[i]]) ? 
+                    `<div class="voice-note"><i class="fas fa-microphone-alt"></i> ${voiceDescriptions[phrases[i]]}</div>` : '';
+                
+                htmlString += `
+                    <div class="word-card">
+                        <div class="word-number">${String(phraseNumber).padStart(2, '0')}</div>
+                        <div style="flex: 1;">
+                            <div class="word-text">${phrases[i]}</div>
+                            ${voiceNote}
+                        </div>
+                        <button class="play-btn" data-index="${i}" data-part="${part}">
+                            <i class="fas fa-play"></i>
+                        </button>
+                    </div>
+                `;
+            }
+            
+            wordList.innerHTML = htmlString;
+            
+            // Re-initialize audio for this part
+            initializeAudio(part);
+        }
+        
+        function initializeAudio(part) {
+            const phrases = part === 1 ? part1Phrases : part2Phrases;
+            const filenames = part === 1 ? part1Filenames : part2Filenames;
+            
+            // Clear old audio elements
+            audioElements = {};
+            
+            // Create new audio elements
+            for (let i = 0; i < filenames.length; i++) {
+                const audio = new Audio(filenames[i]);
+                audio.volume = 0.8;
+                audioElements[`${part}_${i}`] = audio;
+            }
+            
+            // Attach event listeners to buttons
+            const playButtons = document.querySelectorAll('.play-btn');
+            
+            playButtons.forEach(button => {
+                // Remove any existing listeners by cloning
+                const newButton = button.cloneNode(true);
+                button.parentNode.replaceChild(newButton, button);
+                
+                newButton.addEventListener('click', function() {
+                    const index = parseInt(this.getAttribute('data-index'));
+                    const btnPart = parseInt(this.getAttribute('data-part'));
+                    const audioKey = `${btnPart}_${index}`;
+                    const audio = audioElements[audioKey];
+                    
+                    if (!audio) {
+                        alert('Audio file not found. Please ensure the MP3 files are in the same directory.');
+                        return;
+                    }
+                    
+                    // Stop if same button is playing
+                    if (currentButton === this && currentAudio && !currentAudio.paused) {
+                        currentAudio.pause();
+                        currentAudio.currentTime = 0;
+                        this.classList.remove('playing');
+                        this.innerHTML = '<i class="fas fa-play"></i>';
+                        currentButton = null;
+                        currentAudio = null;
+                        return;
+                    }
+                    
+                    // Stop any other playing audio
+                    if (currentAudio) {
+                        currentAudio.pause();
+                        currentAudio.currentTime = 0;
+                    }
+                    
+                    if (currentButton) {
+                        currentButton.classList.remove('playing');
+                        currentButton.innerHTML = '<i class="fas fa-play"></i>';
+                    }
+                    
+                    // Play new audio
+                    audio.play().catch(error => {
+                        console.error("Error playing audio:", error);
+                        alert(`Error playing audio: ${audio.src}\nPlease make sure the MP3 file exists.`);
+                        this.classList.remove('playing');
+                        this.innerHTML = '<i class="fas fa-play"></i>';
+                        currentButton = null;
+                        currentAudio = null;
+                    });
+                    
+                    this.classList.add('playing');
+                    this.innerHTML = '<i class="fas fa-stop"></i>';
+                    
+                    currentAudio = audio;
+                    currentButton = this;
+                    
+                    // Reset when audio ends
+                    audio.onended = function() {
+                        if (newButton) {
+                            newButton.classList.remove('playing');
+                            newButton.innerHTML = '<i class="fas fa-play"></i>';
+                        }
+                        currentButton = null;
+                        currentAudio = null;
+                    };
+                    
+                    // Handle errors
+                    audio.onerror = function() {
+                        console.error('Audio error for:', audio.src);
+                        if (newButton) {
+                            newButton.classList.remove('playing');
+                            newButton.innerHTML = '<i class="fas fa-play"></i>';
+                        }
+                        currentButton = null;
+                        currentAudio = null;
+                    };
+                });
+            });
+        }
+        
+        // Navigation buttons
+        document.getElementById('btnPart1').addEventListener('click', function() {
+            if (currentPart === 1) return;
+            currentPart = 1;
+            document.getElementById('btnPart1').classList.add('active');
+            document.getElementById('btnPart2').classList.remove('active');
+            
+            // Update header subtitle
+            document.querySelector('header .subtitle').textContent = 'A Story Dictionary • Part 1';
+            document.querySelector('.stats').innerHTML = '<i class="fas fa-microphone-alt"></i> 12 phrases • Slow & clear • Varied voices';
+            document.querySelector('.story-preview p').innerHTML = '<i class="fas fa-quote-left"></i> September 1796... a new baby opens his eyes... and dreams of a land full of apple trees <i class="fas fa-quote-right"></i>';
+            document.querySelector('footer p:last-child').innerHTML = '🍎 "nobody is hungry there... there are apples for everyone" 🍎';
+            
+            renderPart(1);
+        });
+        
+        document.getElementById('btnPart2').addEventListener('click', function() {
+            if (currentPart === 2) return;
+            currentPart = 2;
+            document.getElementById('btnPart1').classList.remove('active');
+            document.getElementById('btnPart2').classList.add('active');
+            
+            // Update header subtitle
+            document.querySelector('header .subtitle').textContent = 'A Story Dictionary • Part 2 • Journey West';
+            document.querySelector('.stats').innerHTML = '<i class="fas fa-microphone-alt"></i> 9 new phrases • Varied voices • Moving West';
+            document.querySelector('.story-preview p').innerHTML = '<i class="fas fa-quote-left"></i> With coffee sack and tin pot, spade and seeds... over the hills, across the plain... the dream grows <i class="fas fa-quote-right"></i>';
+            document.querySelector('footer p:last-child').innerHTML = '🌳 "plants trees... people are moving West... the town people" 🌳';
+            
+            renderPart(2);
+        });
+        
+        // Initialize with Part 2
+        renderPart(2);
+    </script>
+</body>
+</html>
